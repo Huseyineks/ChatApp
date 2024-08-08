@@ -1,8 +1,14 @@
+using ChatApp.DataAccesLayer.Data;
+using ChatApp.EntitiesLayer.Model;
+using ChatApp.PresentationLayer.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSignalR();
+builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddIdentity<AppUser, AppUserRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,5 +29,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapHub<ChatHub>("/chatHub");
 app.Run();
