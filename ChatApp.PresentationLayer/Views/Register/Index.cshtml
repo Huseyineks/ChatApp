@@ -1,0 +1,31 @@
+﻿
+@model UserInformationDTO
+<div class="container">
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label for="Username" class="form-label">UserName</label>
+        <input type="text" class="form-control" id="Username" asp-for="UserName" >
+    
+    </div>
+    <div class="mb-3">
+        <label for="Nickname" class="form-label">Nickname</label>
+        <input type="text" class="form-control" id ="Nickname" asp-for="Nickname">
+    </div>
+    <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
+            <input type="password" class="form-control" id ="Password" asp-for="Password">
+    </div>
+    <div class="mb-3">
+        <label for="Confirmpassword" class="form-label">Confirm Password</label>
+        <input type="password" class="form-control" id="Confirmpassword" asp-for="ConfirmPassword">
+    </div>
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="Email" asp-for="Email">
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+</div>
