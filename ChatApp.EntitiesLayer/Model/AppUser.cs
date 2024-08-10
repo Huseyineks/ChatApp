@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace ChatApp.EntitiesLayer.Model
         public Guid RowGuid { get; set; } = Guid.NewGuid();
 
         public string Nickname { get; set; }
+
+        public string UserImage { get; set; }
 
         //relation
 

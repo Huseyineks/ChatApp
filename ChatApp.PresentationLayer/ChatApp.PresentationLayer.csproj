@@ -28,4 +28,8 @@
     <ProjectReference Include="..\ChatApp.EntitiesLayer\ChatApp.EntitiesLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
 </Project>

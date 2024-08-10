@@ -13,10 +13,13 @@ namespace ChatApp.BusinessLogicLayer.Validators
         public UserInformationValidator() {
 
 
-            RuleFor(i => i.Email).EmailAddress().WithMessage("Please enter a valid email.");
+            RuleFor(i => i.Email).EmailAddress().WithMessage("Please enter a valid email.").NotEmpty().WithMessage("Email field is required.");
             RuleFor(i => i.Password).Equal(i => i.ConfirmPassword).WithMessage("Make sure passwords are same.");
             RuleFor(i => i.UserName).Must(beAlphabetic).WithMessage("Please enter a valid username.");
-        
+            RuleFor(i => i.ConfirmPassword).NotEmpty().WithMessage("Confirm Password field is required.");
+            RuleFor(i => i.Nickname).NotEmpty().WithMessage("Nickname is required.");
+            RuleFor(i => i.UserImage).NotEmpty().WithMessage("Profile Image is required.");
+
         }
 
         private bool beAlphabetic(string username)

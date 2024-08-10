@@ -21,11 +21,15 @@ namespace ChatApp.PresentationLayer.Controllers
         {
             return View();
         }
-
+        [AllowAnonymous]
         [HttpPost]
 
         public async Task<IActionResult> Index(UserInformationDTO userInfo)
         {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
             var logIn = await _signInManager.PasswordSignInAsync(userInfo.UserName, userInfo.Password,false,true);
 
             if (logIn.Succeeded) {

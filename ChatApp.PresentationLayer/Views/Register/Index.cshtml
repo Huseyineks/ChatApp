@@ -2,7 +2,7 @@
 @model UserInformationDTO
 <div class="container">
 
-<form method="post">
+    <form method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="mb-3">
         <label for="Username" class="form-label">UserName</label>
@@ -24,6 +24,10 @@
     <div class="mb-3">
         <label for="Email" class="form-label">Email</label>
         <input type="email" class="form-control" id="Email" asp-for="Email">
+    </div>
+    <div class="mb-3">
+        <label for="UserImage">Profile Image</label>
+        <input class="form-control" id="UserImage" asp-for="UserImage">
     </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
