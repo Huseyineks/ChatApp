@@ -1,0 +1,23 @@
+﻿* {
+    box-sizing: border-box; 
+}
+
+.box {
+    display: grid;
+    height: 100vh;
+    
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+ 
+}
+
+
+.column-1{
+    background-color:aqua;
+   
+}
+
+.column-2 {
+    background-color: red;
+   
+}

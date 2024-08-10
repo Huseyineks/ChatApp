@@ -1,5 +1,9 @@
+using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.BusinessLogicLayer.Concrete;
 using ChatApp.BusinessLogicLayer.DTOs;
 using ChatApp.BusinessLogicLayer.Validators;
+using ChatApp.DataAccesLayer.Abstract;
+using ChatApp.DataAccesLayer.Concrete;
 using ChatApp.DataAccesLayer.Data;
 using ChatApp.EntitiesLayer.Model;
 using ChatApp.PresentationLayer.Hubs;
@@ -14,18 +18,21 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddIdentity<AppUser, AppUserRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IValidator<UserInformationDTO>, UserInformationValidator>();
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-//        .RequireAuthenticatedUser()
-//        .Build();
-//});
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//    options.LoginPath = "/Login/Index";
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<IMessageService,MessageService>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login/Index";
 
 
-//});
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
