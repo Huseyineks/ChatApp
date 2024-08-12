@@ -1,4 +1,4 @@
-﻿
+﻿@model ChatViewModel
 @section Styles{
 
     <link rel="stylesheet" href="~/css/chat.css">
@@ -8,10 +8,26 @@
        <div class="box">
 
 
-           <div class="column column-1">asdasd</div>
+           <div class="column column-1 border-5">
+               
+            @foreach(var user in Model.Users)
+            {
+
+                <div class="p-3"> <a asp-controller="Chat" asp-action="Text" asp-route-guid ="@user.RowGuid"><figure class="mb-4" style="display:inline-block;"><img class="img-fluid rounded-circle" src="~/Images/@user.UserImage" alt="..." style="height:50px; width:50px; margin-right:15px;"></figure>@user.Nickname </a>   </div>
 
 
-           <div class="column column-2">asdass12312123</div>
+                }
+            
+
+           </div>
+
+
+           <div class="column column-2">
+
+              
+
+
+           </div>
 
 
 

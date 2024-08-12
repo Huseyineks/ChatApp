@@ -27,8 +27,4 @@
     <ProjectReference Include="..\ChatApp.EntitiesLayer\ChatApp.EntitiesLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="VMs\" />
-  </ItemGroup>
-
 </Project>

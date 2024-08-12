@@ -1,4 +1,5 @@
-﻿using ChatApp.EntitiesLayer.Model;
+﻿using ChatApp.BusinessLogicLayer.VMs;
+using ChatApp.EntitiesLayer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,15 +13,33 @@ namespace ChatApp.PresentationLayer.Controllers
         {
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var user = await _userManager.GetUserAsync(User);
+           var Users = _userManager.Users.ToList();
+
+            ChatViewModel chatViewModel = new ChatViewModel()
+            {
+                Users = Users
+            };
 
 
-            ViewBag.Nickname = user.Nickname;
+            return View(chatViewModel);
+        }
 
 
-            return View();
+        public IActionResult Text(Guid guid) {
+
+            var Users = _userManager.Users.ToList();
+
+            AppUser receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
+
+            ChatViewModel chatViewModel = new ChatViewModel()
+            {
+                Users = Users.ToList(),
+                Receiver = receiver
+            };        
+            return View(chatViewModel);
+        
         }
     }
 }
