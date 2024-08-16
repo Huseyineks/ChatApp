@@ -13,9 +13,10 @@ namespace ChatApp.PresentationLayer.Controllers
         {
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-           var Users = _userManager.Users.ToList();
+            var hostUser = await _userManager.GetUserAsync(User);
+            var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
             ChatViewModel chatViewModel = new ChatViewModel()
             {
@@ -27,9 +28,11 @@ namespace ChatApp.PresentationLayer.Controllers
         }
 
 
-        public IActionResult Text(Guid guid) {
+        public async Task<IActionResult> Text(Guid guid) {
 
-            var Users = _userManager.Users.ToList();
+            var hostUser = await _userManager.GetUserAsync(User);
+
+            var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
             AppUser receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
 
