@@ -9,15 +9,8 @@ using System.Threading.Tasks;
 
 namespace ChatApp.DataAccesLayer.Concrete
 {
-    public class MessageRepository : BaseRepository<Message>, IMessageRepository
+    public class OnlineUsersRepository : BaseRepository<OnlineAppUsers>,IOnlineUsersRepository
     {
-        
-        public MessageRepository(ApplicationDbContext db) : base(db)
-        {
-
-           
-
-        }
-     
+        public OnlineUsersRepository(ApplicationDbContext db ): base(db) { }
     }
 }

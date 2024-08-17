@@ -12,13 +12,6 @@ connection.on("ReceiveMessage", function (message) {
     li.textContent = `${message}`;
 });
 
-connection.on("UserConnected", function (messaage) {
-
-});
-
-connection.on("UserDisconnected", function (message) {
-
-});
 
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
@@ -28,10 +21,11 @@ connection.start().then(function () {
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
-    var userId = document.getElementById("hiddenInput").value;
+    var receiverId = document.getElementById("hiddenReceiverInput").value;
+    var authorGuid = document.getElementById("hiddenAuthorInput").value;
     var message = document.getElementById("messageInput").value;
-    console.log("UserId:", userId, "Message:", message);
-    connection.invoke("SendMessage",userId, message).catch(function (err) {
+    console.log("Message:", message);
+    connection.invoke("SendMessage",authorGuid,receiverId,message).catch(function (err) {
 
         return console.error(err.toString());
     });

@@ -26,9 +26,16 @@ namespace ChatApp.DataAccesLayer.Data
             {
                 entity.HasMany(i => i.Messages).WithOne(i => i.Author).HasPrincipalKey(i => i.RowGuid).HasForeignKey(i => i.authorId).OnDelete(DeleteBehavior.Cascade);
             });
+
+            builder.Entity<Message>(entity =>
+            {
+                entity.Property(i => i.Status).HasConversion<string>();
+            });
         }
 
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Message> Messages { get; set; } 
+
+        public DbSet<OnlineAppUsers> OnlineUsers { get; set; }
 
     }
 }

@@ -20,6 +20,7 @@ builder.Services.AddIdentity<AppUser, AppUserRole>(options => options.SignIn.Req
 builder.Services.AddScoped<IValidator<UserInformationDTO>, UserInformationValidator>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IMessageService,MessageService>();
+builder.Services.AddScoped<IOnlineUsersService,OnlineUsersService>();
 
 builder.Services.AddAuthorization(options =>
 {

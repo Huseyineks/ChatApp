@@ -45,7 +45,8 @@
             </div>
             <div class="parent">
             <div class="lower-box">
-                <input value="@Model.Receiver.Id" id="hiddenInput" type="hidden"/>
+                    <input value="@Model.Author.RowGuid" id="hiddenAuthorInput" type="hidden" />
+                <input value="@Model.Receiver.Id" id="hiddenReceiverInput" type="hidden"/>
             <input type="text" placeholder="Write a message" id="messageInput"/>
                 <button id ="sendButton">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">

@@ -10,6 +10,10 @@ namespace ChatApp.EntitiesLayer.Model
     {
         public int Id { get; set; }
 
+        public string ReceiverId { get; set; }
+
+        public MessageStatus Status { get; set; }
+
         public DateTime createdAt { get; set; } = DateTime.Now;
 
         //relation
