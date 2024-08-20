@@ -9,12 +9,15 @@ using ChatApp.EntitiesLayer.Model;
 using ChatApp.PresentationLayer.Hubs;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddIdentity<AppUser, AppUserRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IValidator<UserInformationDTO>, UserInformationValidator>();
@@ -34,6 +37,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

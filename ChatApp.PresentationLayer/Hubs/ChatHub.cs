@@ -44,14 +44,17 @@ namespace ChatApp.PresentationLayer.Hubs
             }
             else
             {
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", message);
+                
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message);
 
             }
+
+            await Clients.Caller.SendAsync("CallerMessage",message);
 
             
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
 
             OnlineAppUsers user = new OnlineAppUsers()
@@ -72,16 +75,18 @@ namespace ChatApp.PresentationLayer.Hubs
             _onlineUsersService.Add(user);
             _onlineUsersService.Save();
             
-            return base.OnConnectedAsync();
+            await base.OnConnectedAsync();
         }
-        public override Task OnDisconnectedAsync(Exception? exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            OnlineAppUsers disconnectedUser = _onlineUsersService.GetAll().SingleOrDefault(i => i.userId == Context.UserIdentifier);
+            OnlineAppUsers disconnectedUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userId == Context.UserIdentifier);
             
             _onlineUsersService.Remove(disconnectedUser);
             _onlineUsersService.Save();
 
-            return base.OnDisconnectedAsync(exception);
+            await base.OnDisconnectedAsync(exception);
         }
+
+        
     }
 }

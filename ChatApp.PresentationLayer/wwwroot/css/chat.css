@@ -102,3 +102,39 @@ img {
 .n-image{
     margin-left:5px;
 }
+
+.msg-sended {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top:8px;
+}
+
+
+.msg-sended div {
+    border-radius: 1.25rem;
+    background-color: #3797F0;
+    min-width:auto;
+    max-width:300px;
+    color:#FFFFFF;
+    padding: 10px;
+    
+}
+
+.msg-received {
+    margin-top:8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.msg-received div {
+    
+    border-radius: 1.25rem;
+    background-color: #EFEFEF;
+    min-width: auto;
+    max-width: 300px;
+    color:#000000;
+    padding:10px;
+    
+}

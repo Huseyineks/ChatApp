@@ -2,15 +2,35 @@
 
 
 
-//Disable the send button until connection is established.
+
 document.getElementById("sendButton").disabled = true;
 
-connection.on("ReceiveMessage", function (message) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
+connection.on("ReceiveMessage", function (authorGuid, message) {
 
-    li.textContent = `${message}`;
+    var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
+
+    if (authorGuid == receiverGuid) {
+
+        var div = document.createElement("div");
+        div.className = "msg-received";
+        var msg_div = document.createElement("div"); 
+        msg_div.className = "msg";
+        document.getElementById("messagesList").appendChild(div);
+        div.appendChild(msg_div);
+        msg_div.textContent = `${message}`;
+    }
 });
+
+connection.on("CallerMessage", function (message) {
+    var div = document.createElement("div");
+    div.className = "msg-sended";
+    var msg_div = document.createElement("div");
+    msg_div.className = "msg";
+    document.getElementById("messagesList").appendChild(div);
+
+    div.appendChild(msg_div);
+    msg_div.textContent = `${message}`;
+})
 
 
 connection.start().then(function () {
@@ -29,5 +49,6 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 
         return console.error(err.toString());
     });
+    document.getElementById("messageInput").value = "";
     event.preventDefault();
 });
