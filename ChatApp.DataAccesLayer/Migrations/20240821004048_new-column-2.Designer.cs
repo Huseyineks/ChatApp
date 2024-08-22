@@ -4,6 +4,7 @@ using ChatApp.DataAccesLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatApp.DataAccesLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240821004048_new-column-2")]
+    partial class newcolumn2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,11 +142,15 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("authorGuid")
+                    b.Property<Guid>("authorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("createdAt")
@@ -153,12 +160,9 @@ namespace ChatApp.DataAccesLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("receiverGuid")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("authorGuid");
+                    b.HasIndex("authorId");
 
                     b.ToTable("Messages");
                 });
@@ -177,9 +181,6 @@ namespace ChatApp.DataAccesLayer.Migrations
                     b.Property<string>("userConnectionId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("userGuid")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("userId")
                         .IsRequired()
@@ -297,7 +298,7 @@ namespace ChatApp.DataAccesLayer.Migrations
                 {
                     b.HasOne("ChatApp.EntitiesLayer.Model.AppUser", "Author")
                         .WithMany("Messages")
-                        .HasForeignKey("authorGuid")
+                        .HasForeignKey("authorId")
                         .HasPrincipalKey("RowGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

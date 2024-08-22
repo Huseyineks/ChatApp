@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 namespace ChatApp.DataAccesLayer.Abstract
 {
     public interface IMessageRepository : IBaseRepository<Message>
-    { }
+    {
+
+        public List<Message> GetSortedData();
+    
+    
+    
+    }
 
      
 }

@@ -24,7 +24,7 @@ namespace ChatApp.DataAccesLayer.Data
 
             builder.Entity<AppUser>(entity =>
             {
-                entity.HasMany(i => i.Messages).WithOne(i => i.Author).HasPrincipalKey(i => i.RowGuid).HasForeignKey(i => i.authorId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(i => i.Messages).WithOne(i => i.Author).HasPrincipalKey(i => i.RowGuid).HasForeignKey(i => i.authorGuid).OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Message>(entity =>

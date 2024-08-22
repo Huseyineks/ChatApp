@@ -11,7 +11,10 @@ namespace ChatApp.EntitiesLayer.Model
     {
         [Key]
         public int Id { get; set; }
+
         public string userId { get; set; }
+
+        public Guid userGuid { get; set; }
 
         public string userConnectionId { get; set; }
 

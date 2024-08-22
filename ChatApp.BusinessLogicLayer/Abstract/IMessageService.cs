@@ -9,6 +9,7 @@ namespace ChatApp.BusinessLogicLayer.Abstract
 {
     public interface IMessageService : IBaseService<Message>
     {
+        public List<Message> GetSortedData();
         
     }
 }

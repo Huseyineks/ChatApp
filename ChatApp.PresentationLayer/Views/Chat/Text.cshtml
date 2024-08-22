@@ -37,6 +37,76 @@
             
             <div>
                 
+                <div class="past-messages">
+
+                        @if(Model.AuthorMessages.Count != 0 && Model.ReceiverMessages.Count == 0)
+                        {
+                            foreach(var msg in Model.AuthorMessages)
+                            {
+                                <div class="msg-sended"><div>@msg.message</div></div>
+                            }
+                        }
+                        else if (Model.AuthorMessages.Count == 0 && Model.ReceiverMessages.Count != 0)
+                        {
+                            foreach (var msg in Model.ReceiverMessages)
+                            {
+                                <div class="msg-received"><div>@msg.message</div></div>
+                            }
+                        }
+                        else if (Model.AuthorMessages.Count != 0 && Model.ReceiverMessages.Count != 0)
+                        {
+                            if(Model.AuthorMessages.Count > Model.ReceiverMessages.Count)
+                            {
+                                for(int i = 0; i < Model.AuthorMessages.Count; i++)
+                                {
+                                    if (i >= Model.ReceiverMessages.Count)
+                                    {
+                                        <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
+                                    
+                                    }
+                                    else if(Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[i].createdAt)
+                                    {
+                                        <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="msg-received">
+                                            <div>@Model.ReceiverMessages[i].message</div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else if (Model.AuthorMessages.Count <= Model.ReceiverMessages.Count)
+                            {
+                                for (int i = 0; i < Model.ReceiverMessages.Count; i++)
+                                {
+                                    if (i >= Model.AuthorMessages.Count)
+                                    {
+                                        <div class="msg-received"><div>@Model.ReceiverMessages[i].message</div></div>
+
+                                    }
+                                    else if (Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[i].createdAt)
+                                    {
+                                        <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="msg-received"><div>@Model.ReceiverMessages[i].message</div></div>
+                                    }
+                                }
+
+
+
+
+                            }
+                            
+                        }
+                      
+
+
+
+                </div>
+
                     <div class="msg-header" id ="messagesList">
 
 
@@ -47,8 +117,8 @@
             </div>
             <div class="parent">
             <div class="lower-box">
-                    <input value="@Model.Author.RowGuid" id="hiddenAuthorInput" type="hidden" />
-                <input value="@Model.Receiver.Id" id="hiddenReceiverInput" type="hidden"/>
+                    <input value="@Model.Author.RowGuid" id="hiddenAuthorGuid" type="hidden" />
+                    <input value="@Model.Receiver.Id" id="hiddenReceiverId" type="hidden" />
                     <input value="@Model.Receiver.RowGuid" id="hiddenReceiverGuid" type="hidden" />
             <input type="text" placeholder="Write a message" id="messageInput"/>
                 <button id ="sendButton">

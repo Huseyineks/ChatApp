@@ -20,7 +20,7 @@ namespace ChatApp.PresentationLayer.Hubs
             _messageService = messageService;
         
         }
-        public async Task SendMessage(Guid authorGuid,string userId,string message)
+        public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string userId,string message)
         {
             var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userId == userId);
 
@@ -30,11 +30,13 @@ namespace ChatApp.PresentationLayer.Hubs
             {
                 Message newMessage = new Message()
                 {
-                    ReceiverId = userId,
+                    receiverGuid = receiverGuid,
 
-                    authorId = authorGuid,
+                    authorGuid = authorGuid,
 
-                    Status = MessageStatus.NotSeen
+                    Status = MessageStatus.NotSeen,
+                   
+                    message = message
                     
 
                 };
@@ -44,7 +46,23 @@ namespace ChatApp.PresentationLayer.Hubs
             }
             else
             {
-                
+                Message newMessage = new Message()
+                {
+                    receiverGuid = receiverGuid,
+
+                    authorGuid = authorGuid,
+
+                    Status = MessageStatus.Seen,
+
+                    message = message
+
+
+                };
+
+                _messageService.Add(newMessage);
+                _messageService.Save();
+
+
                 await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message);
 
             }

@@ -10,7 +10,9 @@ namespace ChatApp.EntitiesLayer.Model
     {
         public int Id { get; set; }
 
-        public string ReceiverId { get; set; }
+        public Guid receiverGuid { get; set; }
+
+        public string message { get; set; }
 
         public MessageStatus Status { get; set; }
 
@@ -20,6 +22,6 @@ namespace ChatApp.EntitiesLayer.Model
 
         public virtual AppUser Author { get; set; }
 
-        public Guid authorId { get; set; }
+        public Guid authorGuid { get; set; }
     }
 }

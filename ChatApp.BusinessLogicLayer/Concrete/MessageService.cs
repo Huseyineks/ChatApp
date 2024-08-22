@@ -12,12 +12,17 @@ namespace ChatApp.BusinessLogicLayer.Concrete
     public class MessageService : BaseService<Message>, IMessageService
     {
         private readonly IBaseRepository<Message> _repository;
-        public MessageService(IBaseRepository<Message> repository) : base(repository) { 
-        
-            
-        
-        
+        private readonly IMessageRepository _messageRepository;
+        public MessageService(IBaseRepository<Message> repository, IMessageRepository messageRepository) : base(repository)
+        {
+            _messageRepository = messageRepository;
         }
-     
+
+        public List<Message> GetSortedData()
+        {
+            var sortedData = _messageRepository.GetSortedData();
+
+            return sortedData;
+        }
     }
 }

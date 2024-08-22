@@ -1,17 +1,22 @@
-﻿using ChatApp.BusinessLogicLayer.VMs;
+﻿using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.BusinessLogicLayer.VMs;
 using ChatApp.EntitiesLayer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace ChatApp.PresentationLayer.Controllers
 {
     public class ChatController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        
+        private readonly IMessageService _messageService;
 
-        public ChatController(UserManager<AppUser> userManager)
+        public ChatController(UserManager<AppUser> userManager,IMessageService messageService)
         {
             _userManager = userManager;
+            _messageService = messageService;
         }
         public async Task<IActionResult> Index()
         {
@@ -43,7 +48,9 @@ namespace ChatApp.PresentationLayer.Controllers
             {
                 Users = Users,
                 Receiver = receiver,
-                Author = author
+                Author = author,
+                AuthorMessages = _messageService.GetSortedData().Where(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid).ToList(),
+                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList()
             };        
             return View(chatViewModel);
         

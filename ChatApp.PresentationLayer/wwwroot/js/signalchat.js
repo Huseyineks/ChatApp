@@ -3,52 +3,78 @@
 
 
 
-document.getElementById("sendButton").disabled = true;
+var button = document.getElementById("sendButton");
+
+var messageInput = document.getElementById("messageInput");
+
+
+
+
 
 connection.on("ReceiveMessage", function (authorGuid, message) {
 
-    var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
+    
+        var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
-    if (authorGuid == receiverGuid) {
+        if (authorGuid == receiverGuid) {
 
-        var div = document.createElement("div");
-        div.className = "msg-received";
-        var msg_div = document.createElement("div"); 
-        msg_div.className = "msg";
-        document.getElementById("messagesList").appendChild(div);
-        div.appendChild(msg_div);
-        msg_div.textContent = `${message}`;
-    }
+            var div = document.createElement("div");
+            div.className = "msg-received";
+            var msg_div = document.createElement("div");
+            msg_div.className = "msg";
+            document.getElementById("messagesList").appendChild(div);
+            div.appendChild(msg_div);
+            msg_div.textContent = `${message}`;
+            
+        }
+    
 });
 
 connection.on("CallerMessage", function (message) {
-    var div = document.createElement("div");
-    div.className = "msg-sended";
-    var msg_div = document.createElement("div");
-    msg_div.className = "msg";
-    document.getElementById("messagesList").appendChild(div);
 
-    div.appendChild(msg_div);
-    msg_div.textContent = `${message}`;
-})
+    
+        var div = document.createElement("div");
+        div.className = "msg-sended";
+        var msg_div = document.createElement("div");
+        msg_div.className = "msg";
+        document.getElementById("messagesList").appendChild(div);
+
+        div.appendChild(msg_div);
+        msg_div.textContent = `${message}`;
+    
+});
 
 
 connection.start().then(function () {
-    document.getElementById("sendButton").disabled = false;
+    button.disabled = true;
     alert('SignalR connection failed: ' + err.toString());
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
-document.getElementById("sendButton").addEventListener("click", function (event) {
-    var receiverId = document.getElementById("hiddenReceiverInput").value;
-    var authorGuid = document.getElementById("hiddenAuthorInput").value;
-    var message = document.getElementById("messageInput").value;
+messageInput.addEventListener("input", function (event) {
+
+    if (messageInput.value == "") {
+
+        button.disabled = true;
+    }
+    else {
+        button.disabled = false;
+    }
+    event.preventDefault();
+
+});
+
+button.addEventListener("click", function (event) {
+    var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
+    var authorGuid = document.getElementById("hiddenAuthorGuid").value;
+    var receiverId = document.getElementById("hiddenReceiverId").value;
+    var message = messageInput.value;
     console.log("Message:", message);
-    connection.invoke("SendMessage",authorGuid,receiverId,message).catch(function (err) {
+    connection.invoke("SendMessage",authorGuid,receiverGuid,receiverId,message).catch(function (err) {
 
         return console.error(err.toString());
     });
-    document.getElementById("messageInput").value = "";
+    messageInput.value = "";
     event.preventDefault();
 });

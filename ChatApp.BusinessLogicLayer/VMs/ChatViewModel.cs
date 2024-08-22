@@ -13,5 +13,9 @@ namespace ChatApp.BusinessLogicLayer.VMs
 
         public AppUser Author { get; set; }
         public AppUser Receiver { get; set; }
+
+        public List<Message> AuthorMessages { get; set; }
+
+        public List<Message> ReceiverMessages { get; set; }
     }
 }
