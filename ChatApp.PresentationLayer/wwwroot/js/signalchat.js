@@ -76,5 +76,6 @@ button.addEventListener("click", function (event) {
         return console.error(err.toString());
     });
     messageInput.value = "";
+    button.disabled = true;
     event.preventDefault();
 });

@@ -55,43 +55,62 @@
                         }
                         else if (Model.AuthorMessages.Count != 0 && Model.ReceiverMessages.Count != 0)
                         {
+                            int j = 0;
+                            int i = 0;
                             if(Model.AuthorMessages.Count > Model.ReceiverMessages.Count)
                             {
-                                for(int i = 0; i < Model.AuthorMessages.Count; i++)
+                               
+
+                                while (true)
                                 {
-                                    if (i >= Model.ReceiverMessages.Count)
+                                    if(j >= Model.ReceiverMessages.Count)
                                     {
                                         <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
-                                    
+                                        i++;
+
+                                        if(i >= Model.AuthorMessages.Count)
+                                        {
+                                            break;
+                                        }
                                     }
-                                    else if(Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[i].createdAt)
+
+                                    else if(Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[j].createdAt)
                                     {
                                         <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
+                                        i++;
                                     }
                                     else
                                     {
-                                        <div class="msg-received">
-                                            <div>@Model.ReceiverMessages[i].message</div>
-                                        </div>
+                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        j++;
                                     }
                                 }
                             }
                             else if (Model.AuthorMessages.Count <= Model.ReceiverMessages.Count)
                             {
-                                for (int i = 0; i < Model.ReceiverMessages.Count; i++)
+                                while (true)
                                 {
                                     if (i >= Model.AuthorMessages.Count)
                                     {
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[i].message</div></div>
+                                        if (j >= Model.ReceiverMessages.Count)
+                                        {
+                                            break;
+                                        }
+                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        j++;
 
+                                      
                                     }
-                                    else if (Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[i].createdAt)
+
+                                    else if (Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[j].createdAt)
                                     {
                                         <div class="msg-sended"><div>@Model.AuthorMessages[i].message</div></div>
+                                        i++;
                                     }
                                     else
                                     {
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[i].message</div></div>
+                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        j++;
                                     }
                                 }
 
