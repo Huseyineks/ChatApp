@@ -1,4 +1,5 @@
-﻿using ChatApp.EntitiesLayer.Model;
+﻿using ChatApp.BusinessLogicLayer.DTOs;
+using ChatApp.EntitiesLayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace ChatApp.BusinessLogicLayer.VMs
         public List<Message> AuthorMessages { get; set; }
 
         public List<Message> ReceiverMessages { get; set; }
+
+        public List<MessageNotificationsDTO> Notifications { get; set; }
     }
 }

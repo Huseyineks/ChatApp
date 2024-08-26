@@ -12,11 +12,11 @@ namespace ChatApp.EntitiesLayer.Model
         [Key]
         public int Id { get; set; }
 
-        public string userId { get; set; }
-
         public Guid userGuid { get; set; }
 
-        public string userConnectionId { get; set; }
+        public Guid receiverGuid { get; set; }
+
+        public string? userConnectionId { get; set; }
 
         public DateTime activeAt { get; set; } = DateTime.Now;
     }

@@ -1,4 +1,5 @@
 ﻿using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.BusinessLogicLayer.DTOs;
 using ChatApp.BusinessLogicLayer.VMs;
 using ChatApp.EntitiesLayer.Model;
 using Microsoft.AspNetCore.Identity;
@@ -13,20 +14,35 @@ namespace ChatApp.PresentationLayer.Controllers
         
         private readonly IMessageService _messageService;
 
-        public ChatController(UserManager<AppUser> userManager,IMessageService messageService)
+        private readonly IOnlineUsersService _onlineUsersService;
+
+        public ChatController(UserManager<AppUser> userManager,IMessageService messageService, IOnlineUsersService onlineUsersService)
         {
             _userManager = userManager;
             _messageService = messageService;
+            _onlineUsersService = onlineUsersService;
         }
         public async Task<IActionResult> Index()
         {
             var hostUser = await _userManager.GetUserAsync(User);
             var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
+            List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
+
+            foreach (var user in Users)
+            {
+                MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
+                {
+                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
+                    receiverGuid = user.RowGuid
+                };
+                messagesNot.Add(messageNotificationsDTO);
+            }
             
             ChatViewModel chatViewModel = new ChatViewModel()
             {
-                Users = Users
+                Users = Users,
+                Notifications = messagesNot
             };
 
 
@@ -40,17 +56,37 @@ namespace ChatApp.PresentationLayer.Controllers
 
             var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
+            OnlineAppUsers onlineAppUser = new OnlineAppUsers()
+            {
+                receiverGuid = guid,
+                userGuid = hostUser.RowGuid
+            };
+            _onlineUsersService.Add(onlineAppUser);
+            _onlineUsersService.Save();
+
+
             AppUser author = hostUser;
 
             AppUser receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
 
+            List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
+            foreach (var user in Users)
+            {
+                MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
+                {
+                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
+                    receiverGuid = user.RowGuid
+                };
+                messagesNot.Add(messageNotificationsDTO);
+            }
             ChatViewModel chatViewModel = new ChatViewModel()
             {
                 Users = Users,
                 Receiver = receiver,
                 Author = author,
                 AuthorMessages = _messageService.GetSortedData().Where(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid).ToList(),
-                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList()
+                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList(),
+                Notifications = messagesNot
             };        
             return View(chatViewModel);
         

@@ -23,10 +23,18 @@
     grid-template-rows: 1fr;
 }
 
+.user-box{
+
+    display:flex;
+    justify-content:space-between;
+
+}
+
 .scroll-bar {
     overflow: hidden;
     overflow-y: scroll;
     height:70vh;
+    
    
 }
 
@@ -62,6 +70,7 @@ a:hover {
 }
 .lower-box{
     position:relative;
+    
 }
 
 .lower-box input {

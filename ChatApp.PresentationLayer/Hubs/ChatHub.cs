@@ -20,13 +20,13 @@ namespace ChatApp.PresentationLayer.Hubs
             _messageService = messageService;
         
         }
-        public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string userId,string message)
+        public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string message)
         {
-            var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userId == userId);
+           
 
-            
+              var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == receiverGuid);
 
-            if (onlineUser == null)
+            if (onlineUser == null || onlineUser.receiverGuid != authorGuid )
             {
                 Message newMessage = new Message()
                 {
@@ -43,6 +43,11 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 _messageService.Add(newMessage);
                 _messageService.Save();
+
+                if(onlineUser != null)
+                {
+                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message);
+                }
             }
             else
             {
@@ -72,33 +77,27 @@ namespace ChatApp.PresentationLayer.Hubs
             
         }
 
+
         public override async Task OnConnectedAsync()
         {
+            var hostUser = _userManager.Users.FirstOrDefault(i => i.Id == int.Parse(Context.UserIdentifier));
 
-            OnlineAppUsers user = new OnlineAppUsers()
-            {
-                userConnectionId = Context.ConnectionId,
-                userId = Context.UserIdentifier
-            };
+            var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
 
-            OnlineAppUsers oldUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userId == Context.ConnectionId); // May be there are users with same userId thats why ı did it.
-
-            if (oldUser != null)
-            {
-                _onlineUsersService.Remove(oldUser);
-                _onlineUsersService.Save();
-
-            }
-
-            _onlineUsersService.Add(user);
+            onlineUser.userConnectionId = Context.ConnectionId;
+            
+            _onlineUsersService.Update(onlineUser);
             _onlineUsersService.Save();
+          
             
             await base.OnConnectedAsync();
         }
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            OnlineAppUsers disconnectedUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userId == Context.UserIdentifier);
-            
+           
+
+            OnlineAppUsers disconnectedUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userConnectionId == Context.ConnectionId);
+
             _onlineUsersService.Remove(disconnectedUser);
             _onlineUsersService.Save();
 

@@ -14,10 +14,18 @@
 
             @foreach (var user in Model.Users)
             {
-
+                 var AmountOfNotSeenMsg = Model.Notifications.FirstOrDefault(i => i.receiverGuid == user.RowGuid).AmountOfNotSeenMsg;
+                 <div class="user-box">
                 <div class="p-3"> <a asp-controller="Chat" asp-action="Text" asp-route-guid="@user.RowGuid"><figure class="mb-4" style="display:inline-block;"><img class="img-fluid rounded-circle" src="~/Images/@user.UserImage" alt="..." style="height:50px; width:50px; margin-right:15px;"></figure>@user.Nickname </a>   </div>
-
-
+                        @if (AmountOfNotSeenMsg != 0)
+                        {
+                            <div class="not-seen-msg" style="margin-top:26px;" id="notifications-box-@user.RowGuid">+@AmountOfNotSeenMsg</div>
+                        }
+                        else
+                        {
+                            <div class="not-seen-msg" style="margin-top:26px; display:none;" id="notifications-box-@user.RowGuid"></div>
+                        }
+                    </div>
             }
 
 
@@ -25,17 +33,18 @@
         </div>
         
         <div class="column column-2">
-
             <div class="scroll-bar">
+            
             <div class="upper-box">
-                
-                <img class="img-fluid rounded-circle n-image" src="~/Images/@Model.Receiver.UserImage" alt="...">
-                              
+               
+                <img class="img-fluid rounded-circle n-image" src="~/Images/@Model.Receiver.UserImage" alt="...">    
                 <p class="n-name">@Model.Receiver.Nickname</p>
+                  
 
             </div>
             
             <div>
+               
                 
                 <div class="past-messages">
 
@@ -145,11 +154,11 @@
                 </div>
 
             </div>
-            </div>
+            
             <div class="parent">
             <div class="lower-box">
                     <input value="@Model.Author.RowGuid" id="hiddenAuthorGuid" type="hidden" />
-                    <input value="@Model.Receiver.Id" id="hiddenReceiverId" type="hidden" />
+                   
                     <input value="@Model.Receiver.RowGuid" id="hiddenReceiverGuid" type="hidden" />
             <input type="text" placeholder="Write a message" id="messageInput"/>
                 <button id ="sendButton">
@@ -162,8 +171,8 @@
             </div>
             </div>
             </div>
-        
 
+    </div>
 
 
 

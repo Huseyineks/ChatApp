@@ -16,17 +16,37 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
     
         var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
-        if (authorGuid == receiverGuid) {
+    if (authorGuid == receiverGuid) {
 
-            var div = document.createElement("div");
-            div.className = "msg-received";
-            var msg_div = document.createElement("div");
-            msg_div.className = "msg";
-            document.getElementById("messagesList").appendChild(div);
-            div.appendChild(msg_div);
-            msg_div.textContent = `${message}`;
-            
+        var div = document.createElement("div");
+        div.className = "msg-received";
+        var msg_div = document.createElement("div");
+        msg_div.className = "msg";
+        document.getElementById("messagesList").appendChild(div);
+        div.appendChild(msg_div);
+        msg_div.textContent = `${message}`;
+
+    }
+    else {
+
+        var notificationsBox = document.getElementById("notifications-box-" + authorGuid);
+
+        var currentValue = parseInt(notificationsBox.textContent);
+
+        if (notificaitonsBox.style.display == "none") {
+
+            notificaitonsBox.textContent = +1;
+            notificaitonsBox.style.display = "block";
+
         }
+        else {
+
+            currentValue += 1;
+
+            notificaitonsBox.textContent = "+" + currentValue;
+        }
+        
+    }
     
 });
 
@@ -68,10 +88,10 @@ messageInput.addEventListener("input", function (event) {
 button.addEventListener("click", function (event) {
     var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
     var authorGuid = document.getElementById("hiddenAuthorGuid").value;
-    var receiverId = document.getElementById("hiddenReceiverId").value;
+    
     var message = messageInput.value;
     console.log("Message:", message);
-    connection.invoke("SendMessage",authorGuid,receiverGuid,receiverId,message).catch(function (err) {
+    connection.invoke("SendMessage",authorGuid,receiverGuid,message).catch(function (err) {
 
         return console.error(err.toString());
     });
