@@ -31,19 +31,30 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
 
         var notificationsBox = document.getElementById("notifications-box-" + authorGuid);
 
-        var currentValue = parseInt(notificationsBox.textContent);
+        
 
-        if (notificaitonsBox.style.display == "none") {
 
-            notificaitonsBox.textContent = +1;
-            notificaitonsBox.style.display = "block";
+        //<div class="not-seen-msg" style="display:none;" id="notifications-box-@user.RowGuid">
+
+        if (notificationsBox == null) {
+
+            var userBox = document.getElementById("userBox-" + authorGuid);
+            var newDiv = document.createElement("div");
+
+            newDiv.id = "notifications-box-" + authorGuid;
+            newDiv.className = "not-seen-msg";
+
+            userBox.appendChild(newDiv);
+
+            newDiv.textContent = "1";
 
         }
         else {
+            var currentValue = parseInt(notificationsBox.textContent);
 
             currentValue += 1;
 
-            notificaitonsBox.textContent = "+" + currentValue;
+            notificationsBox.textContent = currentValue;
         }
         
     }

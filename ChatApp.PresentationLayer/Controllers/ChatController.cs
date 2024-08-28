@@ -56,6 +56,15 @@ namespace ChatApp.PresentationLayer.Controllers
 
             var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
+
+            var oldUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
+
+            if (oldUser != null)
+            {
+                _onlineUsersService.Remove(oldUser);
+                _onlineUsersService.Save();
+            }
+
             OnlineAppUsers onlineAppUser = new OnlineAppUsers()
             {
                 receiverGuid = guid,
@@ -74,7 +83,7 @@ namespace ChatApp.PresentationLayer.Controllers
             {
                 MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
                 {
-                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
+                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
                     receiverGuid = user.RowGuid
                 };
                 messagesNot.Add(messageNotificationsDTO);

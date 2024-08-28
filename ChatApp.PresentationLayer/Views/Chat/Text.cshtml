@@ -15,16 +15,16 @@
             @foreach (var user in Model.Users)
             {
                  var AmountOfNotSeenMsg = Model.Notifications.FirstOrDefault(i => i.receiverGuid == user.RowGuid).AmountOfNotSeenMsg;
-                 <div class="user-box">
-                <div class="p-3"> <a asp-controller="Chat" asp-action="Text" asp-route-guid="@user.RowGuid"><figure class="mb-4" style="display:inline-block;"><img class="img-fluid rounded-circle" src="~/Images/@user.UserImage" alt="..." style="height:50px; width:50px; margin-right:15px;"></figure>@user.Nickname </a>   </div>
+                 <div class="user-box" id ="userBox-@user.RowGuid">
+                <div class="p-3"> <a asp-controller="Chat" asp-action="Text" asp-route-guid="@user.RowGuid"><figure class="mb-4" style="display:inline-block;"><img class="img-fluid rounded-circle" src="~/Images/@user.UserImage" alt="..." style="height:50px; width:50px; margin-right:15px;"></figure>@user.Nickname</a>   </div>
                         @if (AmountOfNotSeenMsg != 0)
                         {
-                            <div class="not-seen-msg" style="margin-top:26px;" id="notifications-box-@user.RowGuid">+@AmountOfNotSeenMsg</div>
+                            <div class="not-seen-msg"  id="notifications-box-@user.RowGuid">@AmountOfNotSeenMsg</div>
                         }
-                        else
+                       @*  else
                         {
-                            <div class="not-seen-msg" style="margin-top:26px; display:none;" id="notifications-box-@user.RowGuid"></div>
-                        }
+                            <div class="not-seen-msg" style="display:none;" id="notifications-box-@user.RowGuid"></div>
+                        } *@
                     </div>
             }
 
