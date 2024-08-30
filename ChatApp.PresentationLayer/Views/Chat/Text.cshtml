@@ -7,7 +7,7 @@
 <div style="width:100%;">
     <div class="box">
 
-        <div class="scroll-bar">
+        <div class="scroll-bar-users">
         <div class="column column-1 border-5">
 
             
@@ -33,7 +33,7 @@
         </div>
         
         <div class="column column-2">
-            <div class="scroll-bar">
+           
             
             <div class="upper-box">
                
@@ -44,14 +44,15 @@
             </div>
             
             <div>
-               
-                
-                <div class="past-messages">
+                <div class="scroll-bar-messages">
+
+                    <div class="past-messages" id ="pastMessages">
 
                         @if(Model.AuthorMessages.Count != 0 && Model.ReceiverMessages.Count == 0)
                         {
                             foreach(var msg in Model.AuthorMessages)
                             {
+                                
                                 <div class="msg-sended"><div>@msg.message</div></div>
                             }
                         }
@@ -59,7 +60,14 @@
                         {
                             foreach (var msg in Model.ReceiverMessages)
                             {
-                                <div class="msg-received"><div>@msg.message</div></div>
+                                if(msg.Status == MessageStatus.NotSeen){
+                                <div class="msg-received" data-status ="not-seen" data-id =@msg.Id><div>@msg.message</div></div>
+                                }
+                                else{
+
+                                    <div class="msg-received" data-status="seen" data-id=@msg.Id><div>@msg.message</div></div>
+
+                                }
                             }
                         }
                         else if (Model.AuthorMessages.Count != 0 && Model.ReceiverMessages.Count != 0)
@@ -85,8 +93,15 @@
                                     }
                                     else if (i >= Model.AuthorMessages.Count)
                                     {
+                                        if(Model.ReceiverMessages[j].Status == MessageStatus.NotSeen){
                                         
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                            <div class="msg-received" data-status ="not-seen" data-id =@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
+
                                         j++;
                                     }
 
@@ -97,7 +112,14 @@
                                     }
                                     else
                                     {
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        if (Model.ReceiverMessages[j].Status == MessageStatus.NotSeen)
+                                        {
+                                            <div class="msg-received" data-status="not-seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
                                         j++;
                                     }
                                 }
@@ -112,7 +134,15 @@
                                         {
                                             break;
                                         }
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        if (Model.ReceiverMessages[j].Status == MessageStatus.NotSeen){
+
+                                            <div class="msg-received" data-status="not-seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        
+                                        }
+                                        else
+                                        {
+                                            <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
                                         j++;
 
 
@@ -130,7 +160,14 @@
                                     }
                                     else
                                     {
-                                        <div class="msg-received"><div>@Model.ReceiverMessages[j].message</div></div>
+                                        if (Model.ReceiverMessages[j].Status == MessageStatus.NotSeen)
+                                        {
+                                        <div class="msg-received" data-status ="not-seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id><div>@Model.ReceiverMessages[j].message</div></div>
+                                        }
                                         j++;
                                     }
                                 }
@@ -152,9 +189,9 @@
 
 
                 </div>
-
+                
             </div>
-            
+            </div>
             <div class="parent">
             <div class="lower-box">
                     <input value="@Model.Author.RowGuid" id="hiddenAuthorGuid" type="hidden" />
@@ -170,7 +207,7 @@
                     
             </div>
             </div>
-            </div>
+            
 
     </div>
 
@@ -214,3 +251,4 @@
 </div> *@
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/signalchat.js"></script>
+<script src="~/js/site.js"></script>

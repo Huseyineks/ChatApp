@@ -100,5 +100,25 @@ namespace ChatApp.PresentationLayer.Controllers
             return View(chatViewModel);
         
         }
+
+        [HttpPost]
+        public JsonResult MessageNotification(int messageId)
+        {
+            var message = _messageService.GetAll().FirstOrDefault(i => i.Id  == messageId);
+
+            if (message != null)
+            {
+                message.Status = MessageStatus.Seen;
+
+                _messageService.Update(message);
+                _messageService.Save();
+            }
+
+
+
+            return Json(Ok());
+        }
+
+
     }
 }

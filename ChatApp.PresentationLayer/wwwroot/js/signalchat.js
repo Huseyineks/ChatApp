@@ -26,6 +26,10 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
         div.appendChild(msg_div);
         msg_div.textContent = `${message}`;
 
+        
+
+        div.scrollIntoView(true);
+
     }
     else {
 
@@ -34,7 +38,7 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
         
 
 
-        //<div class="not-seen-msg" style="display:none;" id="notifications-box-@user.RowGuid">
+        
 
         if (notificationsBox == null) {
 
@@ -72,7 +76,11 @@ connection.on("CallerMessage", function (message) {
 
         div.appendChild(msg_div);
         msg_div.textContent = `${message}`;
+
+   
+
     
+    div.scrollIntoView(true);
 });
 
 
@@ -110,3 +118,7 @@ button.addEventListener("click", function (event) {
     button.disabled = true;
     event.preventDefault();
 });
+
+
+
+

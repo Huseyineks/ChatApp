@@ -30,12 +30,17 @@
 
 }
 
-.scroll-bar {
+.scroll-bar-users {
     overflow: hidden;
     overflow-y: scroll;
     height:70vh;
     
    
+}
+.scroll-bar-messages {
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 54vh;
 }
 
 a{
