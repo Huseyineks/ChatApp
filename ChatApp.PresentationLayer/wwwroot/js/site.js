@@ -1,9 +1,9 @@
 ﻿
 
-var notSeenMessages = document.querySelectorAll('[data-status = "not-seen"]');
+
 window.onload = function () {
 
-   
+    var notSeenMessages = document.querySelectorAll('[data-status = "not-seen"]');   
     var topDiv = null;
     var topPosition = Infinity;
     if (notSeenMessages.length > 0) {
@@ -48,9 +48,10 @@ window.onload = function () {
 var observer = new IntersectionObserver(entries => {
 
     entries.forEach(entry => {
+        console.log("Observing element:", entry.target.textContent);
 
         if (entry.isIntersecting) {
-
+            console.log("Element intersecting:", entry.target.textContent);
             entry.target.setAttribute("data-status", "seen");
             var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
@@ -98,42 +99,10 @@ var observer = new IntersectionObserver(entries => {
 
                 }
                 notificationBox.textContent = currentValue;
+                console.log("Unobserving element:", entry.target.textContent);
                 observer.unobserve(entry.target);
             }
-            //else {
-
-            //    notificationBox.remove();
-            //    observer.disconnect();
-            //    return;
-
-            //}
-
-            
-
-
-            
-
-                //$.ajax({
-
-                //    type: "POST",
-                //    url: "/Chat/MessageNotification",
-                //    dataType: "json",
-                //    data: { messageId: messageId },
-
-                //    success: function (result) {
-
-                //        console.log(result);
-                //    },
-
-                //    error: function (req, status, error) {
-
-                //        console.log(status);
-
-                //    }
-
-
-
-                //});
+         
 
 
 
@@ -154,10 +123,13 @@ var observer = new IntersectionObserver(entries => {
 
 });
 
+function startObserving() {
+    var notSeenMessages = document.querySelectorAll('[data-status="not-seen"]');
+    notSeenMessages.forEach(notSeenMsg => {
+        console.log("Starting observation for element:", notSeenMsg.textContent); 
+        observer.observe(notSeenMsg);
+    });
+}
 
 
-notSeenMessages.forEach(notSeenMsg => {
-
-    observer.observe(notSeenMsg);
-
-});
+document.addEventListener("DOMContentLoaded", startObserving);
