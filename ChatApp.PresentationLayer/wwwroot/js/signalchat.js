@@ -104,6 +104,8 @@ messageInput.addEventListener("input", function (event) {
 
 });
 
+
+
 button.addEventListener("click", function (event) {
     var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
     var authorGuid = document.getElementById("hiddenAuthorGuid").value;

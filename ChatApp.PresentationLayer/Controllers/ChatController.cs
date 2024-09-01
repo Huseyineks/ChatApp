@@ -119,6 +119,20 @@ namespace ChatApp.PresentationLayer.Controllers
             return Json(Ok());
         }
 
+        [HttpPost]
+
+        public JsonResult DeleteMessage(int messageId)
+        {
+            var message = _messageService.GetAll().FirstOrDefault(i => i.Id == messageId);
+
+            message.Status = MessageStatus.Deleted;
+            message.message = "This message is deleted.";
+            _messageService.Update(message);
+            _messageService.Save();
+
+            return Json(Ok());
+        }
+
 
     }
 }

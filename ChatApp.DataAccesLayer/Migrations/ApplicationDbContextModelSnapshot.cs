@@ -160,7 +160,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasIndex("authorGuid");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("ChatApp.EntitiesLayer.Model.OnlineAppUsers", b =>
@@ -185,7 +185,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OnlineUsers");
+                    b.ToTable("OnlineUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

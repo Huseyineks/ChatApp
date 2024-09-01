@@ -9,6 +9,8 @@ namespace ChatApp.EntitiesLayer.Model
     public enum MessageStatus
     {
         Seen,
-        NotSeen
+        NotSeen,
+        Deleted,
+        Updated
     }
 }

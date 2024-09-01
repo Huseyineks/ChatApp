@@ -35,8 +35,154 @@ window.onload = function () {
            
 
     }
+    var deleteBoxes = document.querySelectorAll(".delete");
+    var forwardBoxes = document.querySelectorAll(".forward");
+    var replyBoxes = document.querySelectorAll(".reply");
+
+    deleteBoxes.forEach(box => {
+
+        box.addEventListener("click", function () {
+
+            var parentElement = box.parentNode.parentNode;
+
+            var messageId = parentElement.getAttribute("data-id");
+
+            var textBox = parentElement.querySelector(".msg");
+            textBox.textContent = "This message is deleted.";
+            
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Chat/DeleteMessage",
+                dataType: "json",
+                data: { messageId: messageId },
+
+                success: function (result) {
+
+                    console.log(result);
+                },
+
+                error: function (req, status, error) {
+
+                    console.log(status);
+
+                }
+
+
+
+            });
+
+        });
+
+    });
+
+
+
+    var receivedMessages = document.querySelectorAll(".msg-received");
+    var sendedMessages = document.querySelectorAll(".msg-sended");
     
-    
+    receivedMessages.forEach(msg => {
+
+        msg.addEventListener("mouseover", function (event) {
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "flex";
+
+            
+            event.preventDefault();
+        });
+
+        msg.addEventListener("mouseout", function (event) {
+
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "none";
+
+
+            event.preventDefault();
+
+        });
+
+
+    });
+    sendedMessages.forEach(msg => {
+
+        msg.addEventListener("mouseover", function (event) {
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "flex";
+
+
+            event.preventDefault();
+        });
+
+        msg.addEventListener("mouseout", function (event) {
+
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "none";
+
+
+            event.preventDefault();
+
+        });
+
+
+    });
+
+    var dropdown = document.querySelectorAll(".choices");
+    var dropdownList = document.querySelectorAll(".dropdown");
+    dropdown.forEach(list => {
+
+        list.addEventListener("click", function (event) {
+
+            dropdownList.forEach(element => {
+                element.style.display = "none";
+            });
+
+            event.stopPropagation();
+
+
+            var parentElement = list.parentNode;
+            
+            var dropdownElement = parentElement.querySelector(".dropdown");
+
+            dropdownElement.style.display = "block";
+               
+            
+            function clickOnOutside() {
+                 
+                if (!dropdownElement.contains(event.target)) {
+
+                    dropdownElement.style.display = "none";
+
+                    document.removeEventListener("click", clickOnOutside);
+                }
+
+
+            }
+       
+            document.addEventListener("click", clickOnOutside);
+
+           
+        });
+            
+
+             
+
+
+        
+
+
+
+
+    });
+
     
     
     
