@@ -13,9 +13,10 @@ var messageInput = document.getElementById("messageInput");
 
 connection.on("ReceiveMessage", function (authorGuid, message) {
 
-    
+        
         var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
+    
     if (authorGuid == receiverGuid) {
 
         var div = document.createElement("div");
@@ -26,7 +27,7 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
         div.appendChild(msg_div);
         msg_div.textContent = `${message}`;
 
-        
+
 
         div.scrollIntoView(true);
 

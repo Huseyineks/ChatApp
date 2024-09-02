@@ -35,9 +35,65 @@ window.onload = function () {
            
 
     }
+    var replyBoxes = document.querySelectorAll(".reply");
     var deleteBoxes = document.querySelectorAll(".delete");
     var forwardBoxes = document.querySelectorAll(".forward");
     var replyBoxes = document.querySelectorAll(".reply");
+
+    replyBoxes.forEach(box => {
+
+        box.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            var parentElement = box.parentNode.parentNode;
+
+            var lowerBoxParentElement = document.querySelector(".lower-box-parent");
+
+            var replyBox = lowerBoxParentElement.querySelector(".reply-box");
+
+            var msgReplied = document.querySelector(".msg-replied");
+
+            var message = parentElement.querySelector(".msg").textContent;
+
+            replyBox.style.display = "block";
+
+            if (parentElement.classList.contains("msg-sended")) {
+
+                
+
+                msgReplied.style.backgroundColor = "#3797F0";
+
+                replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
+
+                replyBox.querySelector(".replying-to-message").textContent = message;
+                 
+            } else {
+
+                
+
+                    msgReplied.style.backgroundColor = "#EFEFEF";
+
+                replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + ".."; 
+                replyBox.querySelector(".replying-to-message").textContent = message;
+
+            }
+            function closeBox() {
+
+                replyBox.style.display = "none";
+
+                document.querySelector(".cancel-button").removeEventListener("click", closeBox);
+
+            }
+
+            document.querySelector(".cancel-button").addEventListener("click", closeBox);
+
+
+        });
+
+    });
+
+
 
     deleteBoxes.forEach(box => {
 
