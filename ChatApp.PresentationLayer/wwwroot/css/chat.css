@@ -8,7 +8,14 @@
 
 * {
     box-sizing: border-box;
+   
     
+}
+
+p{
+    padding:0;
+    margin:0;
+
 }
 
 
@@ -148,19 +155,6 @@ a:hover {
 }
 
 
-.chat-replay-box {
-    height: 20px;
-    background-color: white;
-    position:relative;
-}
-
-.chat-msg-replied {
-
-    position: absolute;
-    left: 5px;
-    height: 100%;
-    width: 5px;
-}
 
 
 img {
@@ -284,4 +278,49 @@ img {
 
 
 
+.chat-replied-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    
+    border-radius: 9%;
+}
 
+.chat-replied {
+    margin-left: 5px;
+    
+}
+
+.chat-replied-box .figure {
+    height: 40px;
+    
+    width: 5px;
+    
+}
+
+.sended {
+    background-color: #EFEFEF;
+}
+
+.sended .chat-replied {
+    color: #000000;
+}
+
+.sended .figure{
+
+    background-color:blue;
+}
+
+.received {
+    background-color: #3797F0;
+}
+
+.received .chat-replied {
+color: #FFFFFF;
+}
+
+.received .figure{
+
+    background-color:gray;
+
+}

@@ -18,6 +18,7 @@ namespace ChatApp.EntitiesLayer.Model
 
         public DateTime createdAt { get; set; } = DateTime.Now;
 
+        public string? replyingToMessage {  get; set; }
         //relation
 
         public virtual AppUser Author { get; set; }

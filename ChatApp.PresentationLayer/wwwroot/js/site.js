@@ -58,6 +58,8 @@ window.onload = function () {
 
             replyBox.style.display = "block";
 
+            var replyingToMessage = replyBox.querySelector(".replying-to-message");
+
             if (parentElement.classList.contains("msg-sended")) {
 
                 
@@ -66,7 +68,9 @@ window.onload = function () {
 
                 replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
 
-                replyBox.querySelector(".replying-to-message").textContent = message;
+                replyingToMessage.textContent = message;
+
+                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
                  
             } else {
 
@@ -76,11 +80,14 @@ window.onload = function () {
 
                 replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + ".."; 
                 replyBox.querySelector(".replying-to-message").textContent = message;
+                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
 
             }
             function closeBox() {
 
                 replyBox.style.display = "none";
+
+                replyingToMessage.removeAttribute("data-id");
 
                 document.querySelector(".cancel-button").removeEventListener("click", closeBox);
 

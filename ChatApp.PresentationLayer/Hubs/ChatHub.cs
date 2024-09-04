@@ -20,12 +20,12 @@ namespace ChatApp.PresentationLayer.Hubs
             _messageService = messageService;
         
         }
-        public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string message)
+        public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string message,int? replyingMessageId)
         {
            
 
               var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == receiverGuid);
-
+              var rmsg = _messageService.GetAll().FirstOrDefault(i => i.Id == replyingMessageId);
             if (onlineUser == null || onlineUser.receiverGuid != authorGuid )
             {
                 Message newMessage = new Message()
@@ -36,7 +36,11 @@ namespace ChatApp.PresentationLayer.Hubs
 
                     Status = MessageStatus.NotSeen,
                    
-                    message = message
+                    message = message,
+
+                    replyingToMessage = rmsg?.message
+                    
+                    
                     
 
                 };
@@ -46,7 +50,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 if(onlineUser != null)
                 {
-                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message);
+                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message,replyingMessageId);
                 }
             }
             else
@@ -59,7 +63,11 @@ namespace ChatApp.PresentationLayer.Hubs
 
                     Status = MessageStatus.Seen,
 
-                    message = message
+                    message = message,
+
+                    replyingToMessage= rmsg?.message
+
+                    
 
 
                 };
@@ -68,11 +76,11 @@ namespace ChatApp.PresentationLayer.Hubs
                 _messageService.Save();
 
 
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message);
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,replyingMessageId);
 
             }
 
-            await Clients.Caller.SendAsync("CallerMessage",message);
+            await Clients.Caller.SendAsync("CallerMessage",message,replyingMessageId);
 
             
         }

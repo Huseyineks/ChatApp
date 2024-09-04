@@ -11,7 +11,7 @@ var messageInput = document.getElementById("messageInput");
 
 
 
-connection.on("ReceiveMessage", function (authorGuid, message) {
+connection.on("ReceiveMessage", function (authorGuid, message,replyingMessageId) {
 
         
         var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
@@ -66,9 +66,13 @@ connection.on("ReceiveMessage", function (authorGuid, message) {
     
 });
 
-connection.on("CallerMessage", function (message) {
+connection.on("CallerMessage", function (message,replyingMessageId) {
 
     
+
+
+
+    var p = document.createElement("p");
         var div = document.createElement("div");
         div.className = "msg-sended";
         var msg_div = document.createElement("div");
@@ -76,10 +80,36 @@ connection.on("CallerMessage", function (message) {
         document.getElementById("messagesList").appendChild(div);
 
         div.appendChild(msg_div);
-        msg_div.textContent = `${message}`;
+        
+            
 
-   
+    if (replyingMessageId != null) {
 
+        var chatRepliedBox = document.createElement("div");
+
+        chatRepliedBox.className = "chat-replied-box";
+
+        chatRepliedBox.classList.add("sended");
+
+        var chatReplied = document.createElement("div");
+
+        chatReplied.className = "chat-replied";
+
+        var figure = document.createElement("div");
+
+        figure.className = "figure";
+
+        msg_div.appendChild(chatRepliedBox);
+
+        chatRepliedBox.appendChild(figure);
+        chatRepliedBox.appendChild(chatReplied);
+
+        chatReplied.textContent = document.querySelector(".replying-to-message").textContent;
+
+    }
+    msg_div.appendChild(p);
+
+    p.textContent = `${message}`;
     
     div.scrollIntoView(true);
 });
@@ -113,10 +143,28 @@ button.addEventListener("click", function (event) {
     
     var message = messageInput.value;
     console.log("Message:", message);
-    connection.invoke("SendMessage",authorGuid,receiverGuid,message).catch(function (err) {
 
-        return console.error(err.toString());
-    });
+    var replyBox = document.querySelector(".reply-box");
+
+    var replyingToMessage = replyBox.querySelector(".replying-to-message");
+
+    var replyingToMessageId = replyingToMessage.getAttribute("data-id");
+
+    if (replyingToMessageId != null) {
+
+        replyingToMessageId = parseInt(replyingToMessageId);
+    }
+    connection.invoke("SendMessage", authorGuid, receiverGuid, message, replyingToMessageId).catch(function (err) {
+
+            return console.error(err.toString());
+        });
+
+   
+
+    
+
+    replyBox.style.display = "none";
+    replyingToMessage.removeAttribute("data-id");
     messageInput.value = "";
     button.disabled = true;
     event.preventDefault();

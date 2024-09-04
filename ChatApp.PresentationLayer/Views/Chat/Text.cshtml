@@ -21,10 +21,7 @@
                         {
                             <div class="not-seen-msg"  id="notifications-box-@user.RowGuid">@AmountOfNotSeenMsg</div>
                         }
-                       @*  else
-                        {
-                            <div class="not-seen-msg" style="display:none;" id="notifications-box-@user.RowGuid"></div>
-                        } *@
+                      
                     </div>
             }
 
@@ -64,6 +61,7 @@
 
                                     else if (Model.ReceiverMessages[j].Status == MessageStatus.NotSeen)
                                     {
+                                        
                                         <div class="msg-received" data-status="not-seen" data-id=@Model.ReceiverMessages[j].Id>
                                             <div class="dropdown">
                                                 <div class="forward">
@@ -91,8 +89,33 @@
                                                     <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
                                                 </svg>
                                             </div>
-                                            <div class="msg">@Model.ReceiverMessages[j].message</div>
-                                        </div>
+                                         
+                                            
+                                            <div class="msg">
+
+                                                @if (Model.ReceiverMessages[j].replyingToMessage != null)
+                                                {
+
+                                                    <div class="chat-replied-box received">
+
+                                                        <div class="figure"></div>
+
+                                                        <div class="chat-replied">
+                                                            @Model.ReceiverMessages[j].replyingToMessage
+                                                        </div>
+
+                                                    </div>
+
+
+                                                }
+
+
+
+
+                                                @Model.ReceiverMessages[j].message</div>
+                                        
+                                         
+                                            </div>
                                     }
                                     else
                                     {
@@ -124,7 +147,28 @@
                                                     <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
                                                 </svg>
                                             </div>
-                                            <div class="msg">@Model.ReceiverMessages[j].message</div>
+                                            
+                                            <div class="msg">
+
+                                                @if (Model.ReceiverMessages[j].replyingToMessage != null)
+                                                {
+
+                                                    <div class="chat-replied-box received">
+
+                                                        <div class="figure"></div>
+
+                                                        <div class="chat-replied">
+                                                            @Model.ReceiverMessages[j].replyingToMessage
+                                                        </div>
+
+                                                    </div>
+
+
+                                                }
+                                            
+                                            
+                                            
+                                            @Model.ReceiverMessages[j].message</div>
                                         </div>
 
                                     }
@@ -136,8 +180,36 @@
                                     {
                                         break;
                                     }
+                                    
+                                    
                                     <div class="msg-sended" data-id="@Model.AuthorMessages[i].Id">
-                                        <div class="msg">@Model.AuthorMessages[i].message</div>
+                                    
+                                       
+
+                                        <div class="msg">
+                                        
+                                        @if(Model.AuthorMessages[i].replyingToMessage != null){
+
+                                            <div class="chat-replied-box sended">
+
+                                            <div class="figure"></div>
+
+                                                <div class="chat-replied">
+                                                    @Model.AuthorMessages[i].replyingToMessage
+                                                </div>
+
+                                            </div>
+
+
+                                        }    
+                                        
+                                        
+                                        <p>@Model.AuthorMessages[i].message</p>
+                                        
+                                        </div>
+                                        
+                                        
+                                        
                                         <div class="choices">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
                                                 <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
@@ -175,7 +247,28 @@
                                 else if(Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[j].createdAt)
                                 {
                                     <div class="msg-sended" data-id="@Model.AuthorMessages[i].Id">
-                                        <div class="msg">@Model.AuthorMessages[i].message</div>
+
+                                       
+
+                                        <div class="msg">
+
+                                            @if (Model.AuthorMessages[i].replyingToMessage != null)
+                                            {
+
+                                                <div class="chat-replied-box sended">
+
+                                                    <div class="figure"></div>
+
+                                                    <div class="chat-replied">
+                                                        @Model.AuthorMessages[i].replyingToMessage
+                                                    </div>
+
+                                                </div>
+
+
+                                            }
+
+                                            @Model.AuthorMessages[i].message</div>
                                         <div class="choices">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
                                                 <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
@@ -238,7 +331,26 @@
                                                     <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
                                                 </svg>
                                             </div>
-                                            <div class="msg">@Model.ReceiverMessages[j].message</div>
+                                           
+                                            <div class="msg">
+
+                                                @if (Model.ReceiverMessages[j].replyingToMessage != null)
+                                                {
+
+                                                    <div class="chat-replied-box received">
+
+                                                        <div class="figure"></div>
+
+                                                        <div class="chat-replied">
+                                                            @Model.ReceiverMessages[j].replyingToMessage
+                                                        </div>
+
+                                                    </div>
+
+
+                                                }
+                                            
+                                            @Model.ReceiverMessages[j].message</div>
                                         </div>
                                     }
                                     else
@@ -271,7 +383,27 @@
                                                     <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
                                                 </svg>
                                             </div>
-                                            <div class="msg">@Model.ReceiverMessages[j].message</div>
+                                           
+                                            <div class="msg">
+
+                                                @if (Model.ReceiverMessages[j].replyingToMessage != null)
+                                                {
+
+                                                    <div class="chat-replied-box received">
+
+                                                        <div class="figure"></div>
+
+                                                        <div class="chat-replied">
+                                                            @Model.ReceiverMessages[j].replyingToMessage
+                                                        </div>
+
+                                                    </div>
+
+
+                                                }
+                                            
+                                            
+                                            @Model.ReceiverMessages[j].message</div>
                                         </div>
                                         
                                     }
