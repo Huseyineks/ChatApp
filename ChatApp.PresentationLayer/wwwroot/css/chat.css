@@ -306,10 +306,10 @@ img {
     color: #000000;
 }
 
-.sended .figure{
-
-    background-color:blue;
-}
+    .sended .figure {
+        
+        background-color: gray;
+    }
 
 .received {
     background-color: #3797F0;
@@ -319,8 +319,6 @@ img {
 color: #FFFFFF;
 }
 
-.received .figure{
-
-    background-color:gray;
-
-}
+    .received .figure {
+        background-color: blue;
+    }

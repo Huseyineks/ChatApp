@@ -35,205 +35,205 @@ window.onload = function () {
            
 
     }
-    var replyBoxes = document.querySelectorAll(".reply");
-    var deleteBoxes = document.querySelectorAll(".delete");
-    var forwardBoxes = document.querySelectorAll(".forward");
-    var replyBoxes = document.querySelectorAll(".reply");
+    //var replyBoxes = document.querySelectorAll(".reply");
+    //var deleteBoxes = document.querySelectorAll(".delete");
+    //var forwardBoxes = document.querySelectorAll(".forward");
+    //var replyBoxes = document.querySelectorAll(".reply");
 
-    replyBoxes.forEach(box => {
+    //replyBoxes.forEach(box => {
 
-        box.addEventListener("click", function (event) {
+    //    box.addEventListener("click", function (event) {
 
-            event.stopPropagation();
+    //        event.stopPropagation();
 
-            var parentElement = box.parentNode.parentNode;
+    //        var parentElement = box.parentNode.parentNode;
 
-            var lowerBoxParentElement = document.querySelector(".lower-box-parent");
+    //        var lowerBoxParentElement = document.querySelector(".lower-box-parent");
 
-            var replyBox = lowerBoxParentElement.querySelector(".reply-box");
+    //        var replyBox = lowerBoxParentElement.querySelector(".reply-box");
 
-            var msgReplied = document.querySelector(".msg-replied");
+    //        var msgReplied = document.querySelector(".msg-replied");
 
-            var message = parentElement.querySelector(".msg").textContent;
+    //        var message = parentElement.querySelector(".msg").textContent;
 
-            replyBox.style.display = "block";
+    //        replyBox.style.display = "block";
 
-            var replyingToMessage = replyBox.querySelector(".replying-to-message");
+    //        var replyingToMessage = replyBox.querySelector(".replying-to-message");
 
-            if (parentElement.classList.contains("msg-sended")) {
+    //        if (parentElement.classList.contains("msg-sended")) {
 
                 
 
-                msgReplied.style.backgroundColor = "#3797F0";
+    //            msgReplied.style.backgroundColor = "#3797F0";
 
-                replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
+    //            replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
 
-                replyingToMessage.textContent = message;
+    //            replyingToMessage.textContent = message;
 
-                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
+    //            replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
                  
-            } else {
+    //        } else {
 
                 
 
-                    msgReplied.style.backgroundColor = "#EFEFEF";
+    //                msgReplied.style.backgroundColor = "#EFEFEF";
 
-                replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + ".."; 
-                replyBox.querySelector(".replying-to-message").textContent = message;
-                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
+    //            replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + ".."; 
+    //            replyBox.querySelector(".replying-to-message").textContent = message;
+    //            replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
 
-            }
-            function closeBox() {
+    //        }
+    //        function closeBox() {
 
-                replyBox.style.display = "none";
+    //            replyBox.style.display = "none";
 
-                replyingToMessage.removeAttribute("data-id");
+    //            replyingToMessage.removeAttribute("data-id");
 
-                document.querySelector(".cancel-button").removeEventListener("click", closeBox);
+    //            document.querySelector(".cancel-button").removeEventListener("click", closeBox);
 
-            }
+    //        }
 
-            document.querySelector(".cancel-button").addEventListener("click", closeBox);
-
-
-        });
-
-    });
+    //        document.querySelector(".cancel-button").addEventListener("click", closeBox);
 
 
+    //    });
 
-    deleteBoxes.forEach(box => {
+    //});
 
-        box.addEventListener("click", function () {
 
-            var parentElement = box.parentNode.parentNode;
 
-            var messageId = parentElement.getAttribute("data-id");
+    //deleteBoxes.forEach(box => {
 
-            var textBox = parentElement.querySelector(".msg");
-            textBox.textContent = "This message is deleted.";
+    //    box.addEventListener("click", function () {
+
+    //        var parentElement = box.parentNode.parentNode;
+
+    //        var messageId = parentElement.getAttribute("data-id");
+
+    //        var textBox = parentElement.querySelector(".msg");
+    //        textBox.textContent = "This message is deleted.";
             
 
-            $.ajax({
+    //        $.ajax({
 
-                type: "POST",
-                url: "/Chat/DeleteMessage",
-                dataType: "json",
-                data: { messageId: messageId },
+    //            type: "POST",
+    //            url: "/Chat/DeleteMessage",
+    //            dataType: "json",
+    //            data: { messageId: messageId },
 
-                success: function (result) {
+    //            success: function (result) {
 
-                    console.log(result);
-                },
+    //                console.log(result);
+    //            },
 
-                error: function (req, status, error) {
+    //            error: function (req, status, error) {
 
-                    console.log(status);
+    //                console.log(status);
 
-                }
-
-
-
-            });
-
-        });
-
-    });
+    //            }
 
 
 
-    var receivedMessages = document.querySelectorAll(".msg-received");
-    var sendedMessages = document.querySelectorAll(".msg-sended");
+    //        });
+
+    //    });
+
+    //});
+
+
+
+    //var receivedMessages = document.querySelectorAll(".msg-received");
+    //var sendedMessages = document.querySelectorAll(".msg-sended");
     
-    receivedMessages.forEach(msg => {
+    //receivedMessages.forEach(msg => {
 
-        msg.addEventListener("mouseover", function (event) {
+    //    msg.addEventListener("mouseover", function (event) {
 
-            var choiceBox = msg.querySelector(".choices");
+    //        var choiceBox = msg.querySelector(".choices");
 
-            choiceBox.style.display = "flex";
+    //        choiceBox.style.display = "flex";
 
             
-            event.preventDefault();
-        });
+    //        event.preventDefault();
+    //    });
 
-        msg.addEventListener("mouseout", function (event) {
-
-
-            var choiceBox = msg.querySelector(".choices");
-
-            choiceBox.style.display = "none";
+    //    msg.addEventListener("mouseout", function (event) {
 
 
-            event.preventDefault();
+    //        var choiceBox = msg.querySelector(".choices");
 
-        });
-
-
-    });
-    sendedMessages.forEach(msg => {
-
-        msg.addEventListener("mouseover", function (event) {
-
-            var choiceBox = msg.querySelector(".choices");
-
-            choiceBox.style.display = "flex";
+    //        choiceBox.style.display = "none";
 
 
-            event.preventDefault();
-        });
+    //        event.preventDefault();
 
-        msg.addEventListener("mouseout", function (event) {
-
-
-            var choiceBox = msg.querySelector(".choices");
-
-            choiceBox.style.display = "none";
+    //    });
 
 
-            event.preventDefault();
+    //});
+    //sendedMessages.forEach(msg => {
 
-        });
+    //    msg.addEventListener("mouseover", function (event) {
 
+    //        var choiceBox = msg.querySelector(".choices");
 
-    });
-
-    var dropdown = document.querySelectorAll(".choices");
-    var dropdownList = document.querySelectorAll(".dropdown");
-    dropdown.forEach(list => {
-
-        list.addEventListener("click", function (event) {
-
-            dropdownList.forEach(element => {
-                element.style.display = "none";
-            });
-
-            event.stopPropagation();
+    //        choiceBox.style.display = "flex";
 
 
-            var parentElement = list.parentNode;
+    //        event.preventDefault();
+    //    });
+
+    //    msg.addEventListener("mouseout", function (event) {
+
+
+    //        var choiceBox = msg.querySelector(".choices");
+
+    //        choiceBox.style.display = "none";
+
+
+    //        event.preventDefault();
+
+    //    });
+
+
+    //});
+
+    //var dropdown = document.querySelectorAll(".choices");
+    //var dropdownList = document.querySelectorAll(".dropdown");
+    //dropdown.forEach(list => {
+
+    //    list.addEventListener("click", function (event) {
+
+    //        dropdownList.forEach(element => {
+    //            element.style.display = "none";
+    //        });
+
+    //        event.stopPropagation();
+
+
+    //        var parentElement = list.parentNode;
             
-            var dropdownElement = parentElement.querySelector(".dropdown");
+    //        var dropdownElement = parentElement.querySelector(".dropdown");
 
-            dropdownElement.style.display = "block";
+    //        dropdownElement.style.display = "block";
                
             
-            function clickOnOutside() {
+    //        function clickOnOutside() {
                  
-                if (!dropdownElement.contains(event.target)) {
+    //            if (!dropdownElement.contains(event.target)) {
 
-                    dropdownElement.style.display = "none";
+    //                dropdownElement.style.display = "none";
 
-                    document.removeEventListener("click", clickOnOutside);
-                }
+    //                document.removeEventListener("click", clickOnOutside);
+    //            }
 
 
-            }
+    //        }
        
-            document.addEventListener("click", clickOnOutside);
+    //        document.addEventListener("click", clickOnOutside);
 
            
-        });
+    //    });
             
 
              
@@ -244,9 +244,9 @@ window.onload = function () {
 
 
 
-    });
+    //});
 
-    
+    startEventListener();
     
     
 };
@@ -338,6 +338,222 @@ function startObserving() {
         console.log("Starting observation for element:", notSeenMsg.textContent); 
         observer.observe(notSeenMsg);
     });
+}
+
+function startEventListener() {
+
+    var replyBoxes = document.querySelectorAll(".reply");
+    var deleteBoxes = document.querySelectorAll(".delete");
+    var forwardBoxes = document.querySelectorAll(".forward");
+    var replyBoxes = document.querySelectorAll(".reply");
+
+    replyBoxes.forEach(box => {
+
+        box.addEventListener("click", function (event) {
+
+            event.stopPropagation();
+
+            var parentElement = box.parentNode.parentNode;
+
+            var lowerBoxParentElement = document.querySelector(".lower-box-parent");
+
+            var replyBox = lowerBoxParentElement.querySelector(".reply-box");
+
+            var msgReplied = document.querySelector(".msg-replied");
+
+            var message = parentElement.querySelector(".msg").textContent;
+
+            replyBox.style.display = "block";
+
+            var replyingToMessage = replyBox.querySelector(".replying-to-message");
+
+            if (parentElement.classList.contains("msg-sended")) {
+
+
+
+                msgReplied.style.backgroundColor = "#3797F0";
+
+                replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
+
+                replyingToMessage.textContent = message;
+
+                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
+
+            } else {
+
+
+
+                msgReplied.style.backgroundColor = "#EFEFEF";
+
+                replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + "..";
+                replyBox.querySelector(".replying-to-message").textContent = message;
+                replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
+
+            }
+            function closeBox() {
+
+                replyBox.style.display = "none";
+
+                replyingToMessage.removeAttribute("data-id");
+
+                document.querySelector(".cancel-button").removeEventListener("click", closeBox);
+
+            }
+
+            document.querySelector(".cancel-button").addEventListener("click", closeBox);
+
+
+        });
+
+    });
+
+
+
+    deleteBoxes.forEach(box => {
+
+        box.addEventListener("click", function () {
+
+            var parentElement = box.parentNode.parentNode;
+
+            var messageId = parentElement.getAttribute("data-id");
+
+            var textBox = parentElement.querySelector(".msg");
+            textBox.textContent = "This message is deleted.";
+
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Chat/DeleteMessage",
+                dataType: "json",
+                data: { messageId: messageId },
+
+                success: function (result) {
+
+                    console.log(result);
+                },
+
+                error: function (req, status, error) {
+
+                    console.log(status);
+
+                }
+
+
+
+            });
+
+        });
+
+    });
+
+
+
+    var receivedMessages = document.querySelectorAll(".msg-received");
+    var sendedMessages = document.querySelectorAll(".msg-sended");
+
+    receivedMessages.forEach(msg => {
+
+        msg.addEventListener("mouseover", function (event) {
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "flex";
+
+
+            event.preventDefault();
+        });
+
+        msg.addEventListener("mouseout", function (event) {
+
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "none";
+
+
+            event.preventDefault();
+
+        });
+
+
+    });
+    sendedMessages.forEach(msg => {
+
+        msg.addEventListener("mouseover", function (event) {
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "flex";
+
+
+            event.preventDefault();
+        });
+
+        msg.addEventListener("mouseout", function (event) {
+
+
+            var choiceBox = msg.querySelector(".choices");
+
+            choiceBox.style.display = "none";
+
+
+            event.preventDefault();
+
+        });
+
+
+    });
+
+    var dropdown = document.querySelectorAll(".choices");
+    var dropdownList = document.querySelectorAll(".dropdown");
+    dropdown.forEach(list => {
+
+        list.addEventListener("click", function (event) {
+
+            dropdownList.forEach(element => {
+                element.style.display = "none";
+            });
+
+            event.stopPropagation();
+
+
+            var parentElement = list.parentNode;
+
+            var dropdownElement = parentElement.querySelector(".dropdown");
+
+            dropdownElement.style.display = "block";
+
+
+            function clickOnOutside() {
+
+                if (!dropdownElement.contains(event.target)) {
+
+                    dropdownElement.style.display = "none";
+
+                    document.removeEventListener("click", clickOnOutside);
+                }
+
+
+            }
+
+            document.addEventListener("click", clickOnOutside);
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+    });
+
+
 }
 
 

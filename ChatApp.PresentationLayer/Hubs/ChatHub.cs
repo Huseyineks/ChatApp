@@ -1,4 +1,5 @@
 ﻿using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.DataAccesLayer.Migrations;
 using ChatApp.EntitiesLayer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -25,10 +26,13 @@ namespace ChatApp.PresentationLayer.Hubs
            
 
               var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == receiverGuid);
-              var rmsg = _messageService.GetAll().FirstOrDefault(i => i.Id == replyingMessageId);
+            Message newMessage;
+            
+            
+            var rmsg = _messageService.GetAll().FirstOrDefault(i => i.Id == replyingMessageId);
             if (onlineUser == null || onlineUser.receiverGuid != authorGuid )
             {
-                Message newMessage = new Message()
+                 newMessage = new Message()
                 {
                     receiverGuid = receiverGuid,
 
@@ -50,12 +54,12 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 if(onlineUser != null)
                 {
-                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message,replyingMessageId);
+                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message,rmsg?.message);
                 }
             }
             else
             {
-                Message newMessage = new Message()
+                 newMessage = new Message()
                 {
                     receiverGuid = receiverGuid,
 
@@ -76,11 +80,11 @@ namespace ChatApp.PresentationLayer.Hubs
                 _messageService.Save();
 
 
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,replyingMessageId);
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message);
 
             }
 
-            await Clients.Caller.SendAsync("CallerMessage",message,replyingMessageId);
+            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id);
 
             
         }
