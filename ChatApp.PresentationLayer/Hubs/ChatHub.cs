@@ -80,7 +80,7 @@ namespace ChatApp.PresentationLayer.Hubs
                 _messageService.Save();
 
 
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message);
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message,newMessage.Id);
 
             }
 
