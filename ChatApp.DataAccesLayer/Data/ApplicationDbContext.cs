@@ -30,6 +30,8 @@ namespace ChatApp.DataAccesLayer.Data
             builder.Entity<Message>(entity =>
             {
                 entity.Property(i => i.Status).HasConversion<string>();
+                
+           
             });
         }
 

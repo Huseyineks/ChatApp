@@ -42,7 +42,11 @@ namespace ChatApp.PresentationLayer.Hubs
                    
                     message = message,
 
-                    replyingToMessage = rmsg?.message
+                    replyingToMessage = rmsg?.message,
+
+                    replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+
+                    repliedMessageId = rmsg?.Id
                     
                     
                     
@@ -69,22 +73,26 @@ namespace ChatApp.PresentationLayer.Hubs
 
                     message = message,
 
-                    replyingToMessage= rmsg?.message
+                    replyingToMessage= rmsg?.message,
 
-                    
+					replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+
+                    repliedMessageId = rmsg?.Id
 
 
-                };
+
+
+                 };
 
                 _messageService.Add(newMessage);
                 _messageService.Save();
 
 
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message,newMessage.Id);
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message,newMessage.Id,newMessage.replyingTo,newMessage.repliedMessageId);
 
             }
 
-            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id);
+            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id,newMessage.repliedMessageId);
 
             
         }

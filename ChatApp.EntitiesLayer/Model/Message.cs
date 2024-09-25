@@ -18,11 +18,17 @@ namespace ChatApp.EntitiesLayer.Model
 
         public DateTime createdAt { get; set; } = DateTime.Now;
 
+        public string? replyingTo { get; set; }
+
         public string? replyingToMessage {  get; set; }
+
+        public int? repliedMessageId { get; set; }
         //relation
 
         public virtual AppUser Author { get; set; }
 
         public Guid authorGuid { get; set; }
+
+        
     }
 }

@@ -96,23 +96,31 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box received">
+                                                   
+                                                        <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id =@Model.ReceiverMessages[j].repliedMessageId>
 
-                                                        <div class="figure"></div>
+                                                            <div class="figure"></div>
 
-                                                        <div class="chat-replied">
-                                                            @Model.ReceiverMessages[j].replyingToMessage
+                                                            <div class="chat-replied">
+                                                                @Model.ReceiverMessages[j].replyingToMessage
+                                                            </div>
+
                                                         </div>
 
-                                                    </div>
+                                                    
+
+                                                   
 
 
                                                 }
 
 
 
-
-                                                @Model.ReceiverMessages[j].message</div>
+                                                <p>
+                                                @Model.ReceiverMessages[j].message
+                                                </p>
+                                               
+                                                </div>
                                         
                                          
                                             </div>
@@ -153,7 +161,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box received">
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@Model.ReceiverMessages[j].repliedMessageId>
 
                                                         <div class="figure"></div>
 
@@ -167,8 +175,11 @@
                                                 }
                                             
                                             
+                                            <p>
+                                            @Model.ReceiverMessages[j].message
+                                            </p>
                                             
-                                            @Model.ReceiverMessages[j].message</div>
+                                            </div>
                                         </div>
 
                                     }
@@ -190,7 +201,7 @@
                                         
                                         @if(Model.AuthorMessages[i].replyingToMessage != null){
 
-                                            <div class="chat-replied-box sended">
+                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@Model.AuthorMessages[i].repliedMessageId>
 
                                             <div class="figure"></div>
 
@@ -255,7 +266,7 @@
                                             @if (Model.AuthorMessages[i].replyingToMessage != null)
                                             {
 
-                                                <div class="chat-replied-box sended">
+                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@Model.AuthorMessages[i].repliedMessageId>
 
                                                     <div class="figure"></div>
 
@@ -267,8 +278,12 @@
 
 
                                             }
-
-                                            @Model.AuthorMessages[i].message</div>
+                                            <p>
+                                            @Model.AuthorMessages[i].message
+                                            </p>
+                                            
+                                            
+                                            </div>
                                         <div class="choices">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
                                                 <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
@@ -337,7 +352,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box received">
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@Model.ReceiverMessages[j].repliedMessageId>
 
                                                         <div class="figure"></div>
 
@@ -350,7 +365,11 @@
 
                                                 }
                                             
-                                            @Model.ReceiverMessages[j].message</div>
+                                                <p>
+                                            @Model.ReceiverMessages[j].message
+                                                </p>
+                                            
+                                            </div>
                                         </div>
                                     }
                                     else
@@ -389,7 +408,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box received">
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" id=@Model.ReceiverMessages[j].repliedMessageId>
 
                                                         <div class="figure"></div>
 
@@ -402,8 +421,11 @@
 
                                                 }
                                             
+                                            <p>
+                                            @Model.ReceiverMessages[j].message
+                                            </p>
                                             
-                                            @Model.ReceiverMessages[j].message</div>
+                                            </div>
                                         </div>
                                         
                                     }
@@ -502,31 +524,7 @@
 
 
 
-@* <div class="container">
-    <div class="row p-1">
-        <div class="col-1">User</div>
-        <div class="col-5"><input type="text" id="userInput" /></div>
-    </div>
-    <div class="row p-1">
-        <div class="col-1">Message</div>
-        <div class="col-5"><input type="text" class="w-100" id="messageInput" /></div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6 text-end">
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <hr />
-        </div>
-    </div>
-    <div class="row p-1">
-        <div class="col-6">
-            <ul id="messagesList"></ul>
-        </div>
-    </div>
-</div> *@
+
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/signalchat.js"></script>
 <script src="~/js/site.js"></script>

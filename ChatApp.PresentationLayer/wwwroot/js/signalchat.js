@@ -11,7 +11,7 @@ var messageInput = document.getElementById("messageInput");
 
 
 
-connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,messageId) {
+connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,messageId,replyingTo,repliedMessageId) {
 
         
         var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
@@ -62,7 +62,9 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
 
             chatRepliedBox.className = "chat-replied-box";
 
-            chatRepliedBox.classList.add("received");
+            chatRepliedBox.classList.add(replyingTo == "self" ? "received" : "sended");
+
+            chatRepliedBox.setAttribute("data-id", repliedMessageId);
 
             var chatReplied = document.createElement("div");
 
@@ -78,6 +80,8 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
             chatRepliedBox.appendChild(chatReplied);
 
             chatReplied.textContent = replyingMessage;
+
+            repliedMessageEventListener(chatRepliedBox);
 
         }
         msg_div.appendChild(p);
@@ -130,7 +134,7 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
     
 });
 
-connection.on("CallerMessage", function (message,replyingMessage,messageId) {
+connection.on("CallerMessage", function (message,replyingMessage,messageId,repliedMessageId) {
 
     
 
@@ -155,7 +159,9 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId) {
 
         chatRepliedBox.className = "chat-replied-box";
 
-        chatRepliedBox.classList.add("sended");
+        chatRepliedBox.setAttribute("data-id", repliedMessageId);
+
+        chatRepliedBox.classList.add(document.querySelector(".replying-to-message").getAttribute("data-author") == "self" ? "sended" : "received");
 
         var chatReplied = document.createElement("div");
 
@@ -164,13 +170,15 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId) {
         var figure = document.createElement("div");
 
         figure.className = "figure";
-
+        
         msg_div.appendChild(chatRepliedBox);
 
         chatRepliedBox.appendChild(figure);
         chatRepliedBox.appendChild(chatReplied);
 
         chatReplied.textContent = replyingMessage;
+
+        //repliedMessageEventListener(msg_div.querySelector(".chat-replied-box");
 
     }
     msg_div.appendChild(p);
@@ -213,7 +221,11 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId) {
 
     dropdownEventListener(div.querySelector(".choices"));
 
+    if (div.querySelector(".chat-replied-box") != null) {
 
+        repliedMessageEventListener(div.querySelector(".chat-replied-box"));
+
+    }
     div.scrollIntoView(true);
 });
 

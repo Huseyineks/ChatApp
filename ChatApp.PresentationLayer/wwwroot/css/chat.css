@@ -239,6 +239,7 @@ img {
     display:none;
     justify-content:center;
     align-items:center;
+    
 
 }
 
@@ -258,6 +259,7 @@ img {
     
     border-radius:20%;
     transform: translateY(57%);
+   
 }
 
 
@@ -299,26 +301,25 @@ img {
 }
 
 .sended {
-    background-color: #EFEFEF;
-}
-
-.sended .chat-replied {
-    color: #000000;
-}
-
-    .sended .figure {
-        
-        background-color: gray;
-    }
-
-.received {
     background-color: #3797F0;
 }
 
+.sended .chat-replied {
+        color: #EFEFEF;
+    }
+
+    .sended .figure {
+        background-color: blue;
+    }
+
+.received {
+    background-color: #EFEFEF;
+}
+
 .received .chat-replied {
-color: #FFFFFF;
+color: #000000;
 }
 
     .received .figure {
-        background-color: blue;
+        background-color: gray;
     }

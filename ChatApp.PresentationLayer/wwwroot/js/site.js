@@ -8,243 +8,42 @@ window.onload = function () {
     var topPosition = Infinity;
     if (notSeenMessages.length > 0) {
 
-        
+
 
         notSeenMessages.forEach(notSeenMessage => {
 
             const position = notSeenMessage.getBoundingClientRect();
-            
+
             if (position.top < topPosition) {
 
                 topDiv = notSeenMessage;
 
                 topPosition = position.top;
-                
+
 
             }
 
-            
+
         });
-       
 
 
-        
 
-        
+
+
+
         topDiv.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-           
+
+
+    } else {
+
+
+        var container = document.getElementById("pastMessages");
+
+        container.lastElementChild.scrollIntoView({ behavior: "instant", block: "start", inline: "nearest" });
+
 
     }
-    //var replyBoxes = document.querySelectorAll(".reply");
-    //var deleteBoxes = document.querySelectorAll(".delete");
-    //var forwardBoxes = document.querySelectorAll(".forward");
-    //var replyBoxes = document.querySelectorAll(".reply");
-
-    //replyBoxes.forEach(box => {
-
-    //    box.addEventListener("click", function (event) {
-
-    //        event.stopPropagation();
-
-    //        var parentElement = box.parentNode.parentNode;
-
-    //        var lowerBoxParentElement = document.querySelector(".lower-box-parent");
-
-    //        var replyBox = lowerBoxParentElement.querySelector(".reply-box");
-
-    //        var msgReplied = document.querySelector(".msg-replied");
-
-    //        var message = parentElement.querySelector(".msg").textContent;
-
-    //        replyBox.style.display = "block";
-
-    //        var replyingToMessage = replyBox.querySelector(".replying-to-message");
-
-    //        if (parentElement.classList.contains("msg-sended")) {
-
-                
-
-    //            msgReplied.style.backgroundColor = "#3797F0";
-
-    //            replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
-
-    //            replyingToMessage.textContent = message;
-
-    //            replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
-                 
-    //        } else {
-
-                
-
-    //                msgReplied.style.backgroundColor = "#EFEFEF";
-
-    //            replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + ".."; 
-    //            replyBox.querySelector(".replying-to-message").textContent = message;
-    //            replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
-
-    //        }
-    //        function closeBox() {
-
-    //            replyBox.style.display = "none";
-
-    //            replyingToMessage.removeAttribute("data-id");
-
-    //            document.querySelector(".cancel-button").removeEventListener("click", closeBox);
-
-    //        }
-
-    //        document.querySelector(".cancel-button").addEventListener("click", closeBox);
-
-
-    //    });
-
-    //});
-
-
-
-    //deleteBoxes.forEach(box => {
-
-    //    box.addEventListener("click", function () {
-
-    //        var parentElement = box.parentNode.parentNode;
-
-    //        var messageId = parentElement.getAttribute("data-id");
-
-    //        var textBox = parentElement.querySelector(".msg");
-    //        textBox.textContent = "This message is deleted.";
-            
-
-    //        $.ajax({
-
-    //            type: "POST",
-    //            url: "/Chat/DeleteMessage",
-    //            dataType: "json",
-    //            data: { messageId: messageId },
-
-    //            success: function (result) {
-
-    //                console.log(result);
-    //            },
-
-    //            error: function (req, status, error) {
-
-    //                console.log(status);
-
-    //            }
-
-
-
-    //        });
-
-    //    });
-
-    //});
-
-
-
-    //var receivedMessages = document.querySelectorAll(".msg-received");
-    //var sendedMessages = document.querySelectorAll(".msg-sended");
-    
-    //receivedMessages.forEach(msg => {
-
-    //    msg.addEventListener("mouseover", function (event) {
-
-    //        var choiceBox = msg.querySelector(".choices");
-
-    //        choiceBox.style.display = "flex";
-
-            
-    //        event.preventDefault();
-    //    });
-
-    //    msg.addEventListener("mouseout", function (event) {
-
-
-    //        var choiceBox = msg.querySelector(".choices");
-
-    //        choiceBox.style.display = "none";
-
-
-    //        event.preventDefault();
-
-    //    });
-
-
-    //});
-    //sendedMessages.forEach(msg => {
-
-    //    msg.addEventListener("mouseover", function (event) {
-
-    //        var choiceBox = msg.querySelector(".choices");
-
-    //        choiceBox.style.display = "flex";
-
-
-    //        event.preventDefault();
-    //    });
-
-    //    msg.addEventListener("mouseout", function (event) {
-
-
-    //        var choiceBox = msg.querySelector(".choices");
-
-    //        choiceBox.style.display = "none";
-
-
-    //        event.preventDefault();
-
-    //    });
-
-
-    //});
-
-    //var dropdown = document.querySelectorAll(".choices");
-    //var dropdownList = document.querySelectorAll(".dropdown");
-    //dropdown.forEach(list => {
-
-    //    list.addEventListener("click", function (event) {
-
-    //        dropdownList.forEach(element => {
-    //            element.style.display = "none";
-    //        });
-
-    //        event.stopPropagation();
-
-
-    //        var parentElement = list.parentNode;
-            
-    //        var dropdownElement = parentElement.querySelector(".dropdown");
-
-    //        dropdownElement.style.display = "block";
-               
-            
-    //        function clickOnOutside() {
-                 
-    //            if (!dropdownElement.contains(event.target)) {
-
-    //                dropdownElement.style.display = "none";
-
-    //                document.removeEventListener("click", clickOnOutside);
-    //            }
-
-
-    //        }
-       
-    //        document.addEventListener("click", clickOnOutside);
-
-           
-    //    });
-            
-
-             
-
-
-        
-
-
-
-
-    //});
+   
 
     startEventListener();
     
@@ -353,7 +152,7 @@ function replyBoxEventListener(box) {
 
         var msgReplied = document.querySelector(".msg-replied");
 
-        var message = parentElement.querySelector(".msg").textContent;
+        var message = parentElement.querySelector(".msg p").textContent;
 
         replyBox.style.display = "block";
 
@@ -371,6 +170,7 @@ function replyBoxEventListener(box) {
 
             replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
 
+            replyingToMessage.setAttribute("data-author", "self");
         } else {
 
 
@@ -380,6 +180,8 @@ function replyBoxEventListener(box) {
             replyBox.querySelector(".replying-to").textContent = "You're replying to " + document.querySelector(".upper-box").querySelector(".n-name").textContent + "..";
             replyBox.querySelector(".replying-to-message").textContent = message;
             replyingToMessage.setAttribute("data-id", parentElement.getAttribute("data-id"));
+
+            replyingToMessage.setAttribute("data-author", "other");
 
         }
         function closeBox() {
@@ -529,6 +331,23 @@ function dropdownEventListener(list) {
 
 }
 
+function repliedMessageEventListener(box) {
+
+    box.addEventListener("click", function (event) {
+
+
+        var messageId = box.getAttribute("data-id");
+
+        var message = document.querySelector(`.msg-received[data-id="${messageId}"], .msg-sended[data-id="${messageId}"]`);
+
+        message.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+
+
+    });
+
+
+}
+
 
 function startEventListener() {
 
@@ -536,6 +355,14 @@ function startEventListener() {
     var deleteBoxes = document.querySelectorAll(".delete");
     var forwardBoxes = document.querySelectorAll(".forward");
     var replyBoxes = document.querySelectorAll(".reply");
+    var repliedMessagesBoxes = document.querySelectorAll(".chat-replied-box");
+
+
+    repliedMessagesBoxes.forEach(box => {
+
+        repliedMessageEventListener(box);
+
+    });
 
     replyBoxes.forEach(box => {
 
