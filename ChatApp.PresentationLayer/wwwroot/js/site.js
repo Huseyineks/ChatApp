@@ -348,6 +348,37 @@ function repliedMessageEventListener(box) {
 
 }
 
+function forwardBoxEventListener(box) {
+
+    var modal = document.querySelector(".modal");
+
+    var modalContent = document.querySelector(".modal-content");
+    box.addEventListener("click", function (event) {
+
+        
+        modal.style.display = "flex";
+
+
+    });
+
+    modal.addEventListener("click", (event) => {
+
+
+        if (!modalContent.contains(event.target)) {
+
+
+            modal.style.display = "none";
+
+
+        }
+
+
+
+    });
+
+
+}
+
 
 function startEventListener() {
 
@@ -357,6 +388,13 @@ function startEventListener() {
     var replyBoxes = document.querySelectorAll(".reply");
     var repliedMessagesBoxes = document.querySelectorAll(".chat-replied-box");
 
+    forwardBoxes.forEach(box => {
+
+
+        forwardBoxEventListener(box);
+
+
+    });
 
     repliedMessagesBoxes.forEach(box => {
 
