@@ -96,6 +96,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
             
         }
+        
 
 
         public override async Task OnConnectedAsync()

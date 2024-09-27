@@ -353,10 +353,16 @@ function forwardBoxEventListener(box) {
     var modal = document.querySelector(".modal");
 
     var modalContent = document.querySelector(".modal-content");
+    var modalButton = document.querySelector(".modal-button");
+    var forwaredMessage;
     box.addEventListener("click", function (event) {
 
         
         modal.style.display = "flex";
+
+        forwaredMessage = box.parentNode.parentNode.querySelector("p").textContent;
+
+        modalButton.value = forwaredMessage;
 
 
     });
@@ -369,14 +375,120 @@ function forwardBoxEventListener(box) {
 
             modal.style.display = "none";
 
+            var checkBoxes = document.querySelectorAll("#checkBoxButton");
 
+            checkBoxes.forEach(box => {
+
+                box.checked = false;
+                
+
+            });
+
+            
+
+
+            
+
+            modalButton.disabled = true;
         }
+
 
 
 
     });
 
 
+}
+
+function checkBoxEventListener(box) {
+
+    var modalButton = document.querySelector(".modal-button");
+
+    var allBoxes = document.querySelectorAll("#checkBoxButton");
+    box.addEventListener("change", function (event) {
+
+        if (box.checked) {
+
+            modalButton.disabled = false;
+
+
+        }
+
+        else {
+
+            if (areAllUnchecked(allBoxes)) {
+
+                modalButton.disabled = true;
+            }
+
+        }
+
+          
+
+
+    });
+
+
+
+
+}
+function modalButtonEventListener(button) {
+
+    button.addEventListener("click", function (event) {
+
+        var checkBoxes = document.querySelectorAll("#checkBoxButton");
+
+        let usersGuid = new Array();
+
+        checkBoxes.forEach(box => {
+
+            if (box.checked) {
+
+                usersGuid.push(box.value);
+
+                box.checked = false;
+
+            }
+
+        });
+        document.querySelector(".modal").style.display = "none";
+
+        button.disabled = true;
+
+        var authorGuid = document.getElementById("hiddenAuthorGuid").value;
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Chat/ForwardMessage",
+            dataType: "json",
+            data: { usersGuid: usersGuid, message : button.value, authorGuid : authorGuid },
+
+            success: function (result) {
+
+                console.log(result);
+            },
+
+            error: function (req, status, error) {
+
+                console.log(status);
+
+            }
+
+
+
+        });
+
+
+
+    });
+
+   
+
+}
+
+function areAllUnchecked(checkBoxes) {
+    return [...checkBoxes].every(checkBox => !checkBox.checked);
 }
 
 
@@ -387,6 +499,22 @@ function startEventListener() {
     var forwardBoxes = document.querySelectorAll(".forward");
     var replyBoxes = document.querySelectorAll(".reply");
     var repliedMessagesBoxes = document.querySelectorAll(".chat-replied-box");
+
+    var checkBoxes = document.querySelectorAll("#checkBoxButton");
+
+    var modalButton = document.querySelector(".modal-button");
+
+
+    modalButtonEventListener(modalButton);
+
+
+    checkBoxes.forEach(box => {
+
+
+        checkBoxEventListener(box);
+
+
+    });
 
     forwardBoxes.forEach(box => {
 
