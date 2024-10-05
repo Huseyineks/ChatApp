@@ -9,9 +9,25 @@
   
     <div class="box">
 
+
+     
+
         <div class="scroll-bar-users">
         <div class="column column-1 border-5">
 
+            <div class="chat-box">
+
+                <h2>Chat</h2>
+
+                <button onclick="createGroup()">
+                <div style="height:100%; padding-top:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg>
+                    </div>
+                    </button>
+            </div>
             
 
             @foreach (var user in Model.Users)
@@ -520,7 +536,7 @@
 </div>
 
 
-<div class="modal">
+<div class="modal" id ="forwardMessageModal">
 
     
     
@@ -562,7 +578,69 @@
    
 
 
-        <button class="modal-button" disabled>
+        <button class="modal-button"  id ="forwardMessageButton" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+            </svg>
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="modal" id ="createGroupModal">
+
+    
+    
+    
+
+<div class="modal-content">
+
+            <h3 style="padding:15px;">Create A Group</h3>
+
+            <hr>
+            <div class="container">
+
+            <label for="groupImage" style="display:block;">Choose an image</label>
+            <input type="file" placeholder="Choose an ımage" id ="groupImage">
+
+            <input type="text"  placeholder="Enter a group name" class="col-12"id ="groupName" style="padding:10px; margin-bottom:3px;"/>
+            
+            
+
+        </div>
+        <div class="modal-scrollbar">
+            @foreach(var user in Model.Users)
+            {
+                
+                <div class="modal-list">
+
+                    <div style="display:flex; justify-content:flex-start;">
+                        <img class="img-fluid rounded-circle n-image" src="~/Images/@user.UserImage" alt="...">
+                        <p class="n-name" style="margin-left:10px; margin-bottom:10px;">@user.UserName</p>
+                    </div>
+
+                    <div>
+
+                        <input type="checkbox" value="@user.RowGuid" id ="checkBoxButton" style="height:20px; width:20px;"/>
+
+                    </div>
+
+
+                </div>
+
+
+
+            }
+
+
+        </div>
+
+   
+
+
+        <button class="modal-button" disabled id ="createGroupButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
                 <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
             </svg>

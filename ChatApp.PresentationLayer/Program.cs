@@ -24,7 +24,9 @@ builder.Services.AddScoped<IValidator<UserInformationDTO>, UserInformationValida
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IMessageService,MessageService>();
 builder.Services.AddScoped<IOnlineUsersService,OnlineUsersService>();
+builder.Services.AddScoped<IUserGroupService,UserGroupService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddAuthorization(options =>
 {

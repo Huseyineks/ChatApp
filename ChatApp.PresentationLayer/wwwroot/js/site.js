@@ -350,10 +350,10 @@ function repliedMessageEventListener(box) {
 
 function forwardBoxEventListener(box) {
 
-    var modal = document.querySelector(".modal");
+    var modal = document.getElementById("forwardMessageModal");
 
-    var modalContent = document.querySelector(".modal-content");
-    var modalButton = document.querySelector(".modal-button");
+    var modalContent = modal.querySelector(".modal-content");
+    var modalButton = document.getElementById("forwardMessageButton");
     var forwaredMessage;
     box.addEventListener("click", function (event) {
 
@@ -402,10 +402,14 @@ function forwardBoxEventListener(box) {
 
 function checkBoxEventListener(box) {
 
-    var modalButton = document.querySelector(".modal-button");
+    
+
+    
 
     var allBoxes = document.querySelectorAll("#checkBoxButton");
     box.addEventListener("change", function (event) {
+
+        var modalButton = box.parentNode.parentNode.parentNode.parentNode.querySelector(".modal-button");
 
         if (box.checked) {
 
@@ -432,11 +436,102 @@ function checkBoxEventListener(box) {
 
 
 }
-function modalButtonEventListener(button) {
 
-    button.addEventListener("click", function (event) {
 
-        var checkBoxes = document.querySelectorAll("#checkBoxButton");
+function areAllUnchecked(checkBoxes) {
+    return [...checkBoxes].every(checkBox => !checkBox.checked);
+}
+
+
+function createGroup() {
+
+    var modal = document.getElementById("createGroupModal");
+
+    modal.style.display = "flex";
+
+    var modalContent = modal.querySelector(".modal-content");
+
+
+    modal.addEventListener("click", function (event) {
+
+
+        if (!modalContent.contains(event.target)) {
+
+
+            modal.style.display = "none";
+
+
+
+            var checkBoxes = document.querySelectorAll("#checkBoxButton");
+
+            checkBoxes.forEach(box => {
+
+                box.checked = false;
+
+
+            });
+
+
+            var groupNameInput = document.getElementById("groupName");
+
+            var groupImageInput = document.getElementById("groupImage");
+
+
+           
+
+
+            groupImageInput.value = '';
+            groupNameInput.value = '';
+
+
+
+            modalButton.disabled = true;
+
+
+        }
+
+
+
+
+
+    });
+
+
+
+}
+
+function startEventListener() {
+
+    var replyBoxes = document.querySelectorAll(".reply");
+    var deleteBoxes = document.querySelectorAll(".delete");
+    var forwardBoxes = document.querySelectorAll(".forward");
+    var replyBoxes = document.querySelectorAll(".reply");
+    var repliedMessagesBoxes = document.querySelectorAll(".chat-replied-box");
+
+    var checkBoxes = document.querySelectorAll("#checkBoxButton");
+
+    var forwardMessageButton = document.getElementById("forwardMessageButton");
+
+    var createGroupButton = document.getElementById("createGroupButton");
+
+
+    createGroupButton.addEventListener("click", function (event) {
+
+        var groupNameInput = document.getElementById("groupName");
+
+        var groupImageInput = document.getElementById("groupImage");
+
+        var files = groupImageInput.files;
+
+
+        var file = files[0];
+
+
+       
+        
+
+        
+        var checkBoxes = createGroupButton.parentNode.querySelectorAll("#checkBoxButton");
 
         let usersGuid = new Array();
 
@@ -451,9 +546,63 @@ function modalButtonEventListener(button) {
             }
 
         });
-        document.querySelector(".modal").style.display = "none";
+        document.getElementById("createGroupModal").style.display = "none";
 
-        button.disabled = true;
+        createGroupButton.disabled = true;
+
+        // rresim sonra 
+
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Chat/CreateGroup",
+            dataType: "json",
+            data: { usersGuid: usersGuid, groupName: groupNameInput.value, groupImage: null },
+
+            success: function (result) {
+
+                console.log(result);
+            },
+
+            error: function (req, status, error) {
+
+                alert(error);
+
+            }
+
+
+
+        });
+
+        groupImageInput.value = '';
+        groupNameInput.value = '';
+    });
+
+
+    forwardMessageButton.addEventListener("click", function (event) {
+
+       
+
+
+        var checkBoxes = forwardMessageButton.parentNode.querySelectorAll("#checkBoxButton");
+
+        let usersGuid = new Array();
+
+        checkBoxes.forEach(box => {
+
+            if (box.checked) {
+
+                usersGuid.push(box.value);
+
+                box.checked = false;
+
+            }
+
+        });
+        document.getElementById("forwardMessageModal").style.display = "none";
+
+        forwardMessageButton.disabled = true;
 
         var authorGuid = document.getElementById("hiddenAuthorGuid").value;
 
@@ -462,7 +611,7 @@ function modalButtonEventListener(button) {
             type: "POST",
             url: "/Chat/ForwardMessage",
             dataType: "json",
-            data: { usersGuid: usersGuid, message : button.value, authorGuid : authorGuid },
+            data: { usersGuid: usersGuid, message: forwardMessageButton.value, authorGuid: authorGuid },
 
             success: function (result) {
 
@@ -481,31 +630,11 @@ function modalButtonEventListener(button) {
 
 
 
+
+
     });
 
-   
-
-}
-
-function areAllUnchecked(checkBoxes) {
-    return [...checkBoxes].every(checkBox => !checkBox.checked);
-}
-
-
-function startEventListener() {
-
-    var replyBoxes = document.querySelectorAll(".reply");
-    var deleteBoxes = document.querySelectorAll(".delete");
-    var forwardBoxes = document.querySelectorAll(".forward");
-    var replyBoxes = document.querySelectorAll(".reply");
-    var repliedMessagesBoxes = document.querySelectorAll(".chat-replied-box");
-
-    var checkBoxes = document.querySelectorAll("#checkBoxButton");
-
-    var modalButton = document.querySelector(".modal-button");
-
-
-    modalButtonEventListener(modalButton);
+    
 
 
     checkBoxes.forEach(box => {

@@ -17,7 +17,9 @@ namespace ChatApp.EntitiesLayer.Model
         public string UserImage { get; set; }
 
         //relation
+        public virtual List<AppUserGroup> Groups { get; set; }
 
+        
         public virtual List<Message> Messages { get; set; }
     }
 }

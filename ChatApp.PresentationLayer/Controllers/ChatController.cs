@@ -4,9 +4,11 @@ using ChatApp.BusinessLogicLayer.VMs;
 using ChatApp.DataAccesLayer.Migrations;
 using ChatApp.EntitiesLayer.Model;
 using ChatApp.PresentationLayer.Hubs;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
 namespace ChatApp.PresentationLayer.Controllers
@@ -19,19 +21,34 @@ namespace ChatApp.PresentationLayer.Controllers
 
         private readonly IOnlineUsersService _onlineUsersService;
 
-        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IGroupService _groupService;
 
-        public ChatController(UserManager<AppUser> userManager,IMessageService messageService, IOnlineUsersService onlineUsersService,IHubContext<ChatHub> hubContext)
+        private readonly IHubContext<ChatHub> _hubContext;
+        
+        private readonly IUserGroupService _userGroupService;
+
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public ChatController(UserManager<AppUser> userManager,IMessageService messageService, IOnlineUsersService onlineUsersService,IHubContext<ChatHub> hubContext, IGroupService groupService, IUserGroupService userGroupService, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _messageService = messageService;
             _onlineUsersService = onlineUsersService;
             _hubContext = hubContext;
+            _groupService = groupService;
+            _userGroupService = userGroupService;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index()
         {
             var hostUser = await _userManager.GetUserAsync(User);
             var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
+
+
+            AppUser hostUserWithGroups = _userManager.Users.Include(i => i.Groups).ThenInclude(i => i.Group).FirstOrDefault(i => i.Id == hostUser.Id);
+
+         
+
 
             List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
 
@@ -48,7 +65,9 @@ namespace ChatApp.PresentationLayer.Controllers
             ChatViewModel chatViewModel = new ChatViewModel()
             {
                 Users = Users,
-                Notifications = messagesNot
+                Notifications = messagesNot,
+                Groups = hostUserWithGroups.Groups.ToList()
+                
             };
 
 
@@ -225,6 +244,73 @@ namespace ChatApp.PresentationLayer.Controllers
             return Json(Ok());
         }
 
+        [HttpPost]
+
+        public async Task<JsonResult> CreateGroup(List<Guid> usersGuid,string groupName, IFormFile groupImage)
+        {
+
+            var hostUser = await _userManager.GetUserAsync(User);
+
+
+            usersGuid.Add(hostUser.RowGuid);
+
+            var users =  _userManager.Users.Where(i => usersGuid.Contains(i.RowGuid)).ToList();
+
+            Group newGroup = new Group()
+            {
+
+                groupName = groupName,
+
+                GroupImage = UploadFile(groupImage) // burdaki sorun formfile null olarak geliyor ve js tarafındaki değeri .value ile almamak lazım başka yöntemler var araştır
+
+
+            };
+
+
+            _groupService.Add(newGroup);
+            _groupService.Save();
+
+            foreach(var user in users) {
+
+
+
+                AppUserGroup appUserGroup = new AppUserGroup()
+                {
+                    AppUserId = user.Id,
+                    GroupId = newGroup.Id
+                };
+            _userGroupService.Add(appUserGroup);
+            
+            }
+
+            
+            _userGroupService.Save();
+
+            return Json(Ok());
+        }
+
+        private string UploadFile(IFormFile image)
+        {
+            string? fileName = null;
+
+            if (image != null)
+            {
+                string uploadDir = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+                fileName = Guid.NewGuid().ToString() + '-' +image.FileName;
+                string filePath = Path.Combine(uploadDir, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    image.CopyTo(fileStream);
+                }
+            }
+            return fileName;
+        }
+
 
     }
+
+   
+
+
 }

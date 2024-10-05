@@ -20,5 +20,7 @@ namespace ChatApp.BusinessLogicLayer.VMs
         public List<Message> ReceiverMessages { get; set; }
 
         public List<MessageNotificationsDTO> Notifications { get; set; }
+
+        public List<AppUserGroup>? Groups { get; set; }
     }
 }

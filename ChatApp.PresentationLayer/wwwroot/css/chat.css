@@ -30,6 +30,26 @@ p{
     grid-template-rows: 1fr;
 }
 
+.chat-box {
+    border: 1px solid lightgrey;
+    
+    display:flex;
+
+    justify-content:space-around;
+
+    
+    /*padding:10px;*/
+}
+
+    .chat-box button {
+       
+        background-color:transparent;
+        color:inherit;
+        border:none;
+        box-shadow:none;
+
+}
+
 .user-box{
 
     display:flex;
