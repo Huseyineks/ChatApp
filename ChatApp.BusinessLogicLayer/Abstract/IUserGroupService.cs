@@ -9,5 +9,9 @@ namespace ChatApp.BusinessLogicLayer.Abstract
 {
     public interface IUserGroupService : IBaseService<AppUserGroup>
     {
+
+        public Group GetGroup(Guid guid);
+
+        public List<AppUser> GetUsers(Guid guid);
     }
 }

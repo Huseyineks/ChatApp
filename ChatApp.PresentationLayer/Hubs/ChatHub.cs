@@ -14,11 +14,14 @@ namespace ChatApp.PresentationLayer.Hubs
         private readonly IOnlineUsersService _onlineUsersService;
 
         private readonly IMessageService _messageService;
-        public ChatHub(UserManager<AppUser> userManager, IOnlineUsersService onlineUsersService,IMessageService messageService) { 
+
+        private readonly IUserGroupService _userUserGroupService;
+        public ChatHub(UserManager<AppUser> userManager, IOnlineUsersService onlineUsersService,IMessageService messageService,IUserGroupService userGroupService) { 
 
             _userManager = userManager;
             _onlineUsersService = onlineUsersService;
             _messageService = messageService;
+            _userUserGroupService = userGroupService;
         
         }
         public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string message,int? replyingMessageId)
@@ -95,6 +98,49 @@ namespace ChatApp.PresentationLayer.Hubs
             await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id,newMessage.repliedMessageId);
 
             
+        }
+
+        public async Task SendMessageToGroup(string message,Guid authorGuid, Guid receiverGuid)
+        {
+
+            var usersWithGroup = _userUserGroupService.GetUsers(receiverGuid).Where(i => i.RowGuid != authorGuid).ToList();
+
+            var onlineUsers = _onlineUsersService.GetAll();
+                Message newMessage = new Message()
+                {
+                    authorGuid = authorGuid,
+                    receiverGuid = receiverGuid,
+                    message = message,
+                    Status = MessageStatus.Seen
+                };
+
+            _messageService.Add(newMessage);
+
+            _messageService.Save();
+
+            List<string> connectionIds = new List<string>();
+
+            foreach (var user in usersWithGroup)
+            {
+                var onlineUser = onlineUsers.FirstOrDefault(i => i.userGuid == user.RowGuid);
+
+                if(onlineUser != null)
+                {
+                    connectionIds.Add(onlineUser.userConnectionId);
+                }
+
+
+            }
+
+
+
+
+            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessage.Id);
+
+
+            await Clients.Caller.SendAsync("CallerMessage",message,null,newMessage.Id,null);
+
+
         }
         
 

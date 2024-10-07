@@ -2,6 +2,7 @@
 using ChatApp.BusinessLogicLayer.DTOs;
 using ChatApp.BusinessLogicLayer.VMs;
 using ChatApp.DataAccesLayer.Migrations;
+using ChatApp.EntitiesLayer.Interfaces;
 using ChatApp.EntitiesLayer.Model;
 using ChatApp.PresentationLayer.Hubs;
 using Microsoft.AspNetCore.Hosting;
@@ -80,7 +81,8 @@ namespace ChatApp.PresentationLayer.Controllers
             var hostUser = await _userManager.GetUserAsync(User);
 
             var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
-            
+
+            AppUser hostUserWithGroups = _userManager.Users.Include(i => i.Groups).ThenInclude(i => i.Group).FirstOrDefault(i => i.Id == hostUser.Id);
 
             var oldUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
 
@@ -101,7 +103,23 @@ namespace ChatApp.PresentationLayer.Controllers
 
             AppUser author = hostUser;
 
-            AppUser receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
+            IReceiver receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
+
+            List<Message> ReceiverMessages = new List<Message>();
+            if (receiver == null)
+            {
+                 receiver = _userGroupService.GetGroup(guid);
+
+                ReceiverMessages = _messageService.GetSortedData().Where(i => i.receiverGuid == guid && i.authorGuid != hostUser.RowGuid).ToList();
+
+
+            }
+            else {
+
+                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList();
+
+
+            }
 
             List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
             foreach (var user in Users)
@@ -119,8 +137,9 @@ namespace ChatApp.PresentationLayer.Controllers
                 Receiver = receiver,
                 Author = author,
                 AuthorMessages = _messageService.GetSortedData().Where(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid).ToList(),
-                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList(),
-                Notifications = messagesNot
+                ReceiverMessages = ReceiverMessages,
+                Notifications = messagesNot,
+                Groups = hostUserWithGroups?.Groups.ToList()
             };        
             return View(chatViewModel);
         

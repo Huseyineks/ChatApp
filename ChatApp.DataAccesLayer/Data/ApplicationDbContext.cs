@@ -59,5 +59,7 @@ namespace ChatApp.DataAccesLayer.Data
 
         public DbSet<Group> Groups { get; set; }
 
+        public DbSet<AppUserGroup> UserGroups { get; set; }
+
     }
 }

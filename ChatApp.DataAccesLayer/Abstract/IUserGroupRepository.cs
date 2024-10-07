@@ -9,5 +9,8 @@ namespace ChatApp.DataAccesLayer.Abstract
 {
     public interface IUserGroupRepository : IBaseRepository<AppUserGroup>
     {
+        public Group GetGroup(Guid guid);
+
+        public List<AppUser> GetUsers(Guid guid);
     }
 }

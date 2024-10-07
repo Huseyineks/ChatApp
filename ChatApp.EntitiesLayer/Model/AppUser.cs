@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ChatApp.EntitiesLayer.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.EntitiesLayer.Model
 {
-    public class AppUser : IdentityUser<int>
+    public class AppUser : IdentityUser<int>,IReceiver
     {
         public Guid RowGuid { get; set; } = Guid.NewGuid();
 
