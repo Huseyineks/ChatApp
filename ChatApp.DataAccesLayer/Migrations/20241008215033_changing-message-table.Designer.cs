@@ -4,6 +4,7 @@ using ChatApp.DataAccesLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatApp.DataAccesLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008215033_changing-message-table")]
+    partial class changingmessagetable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,7 +116,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UserGroups", (string)null);
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("ChatApp.EntitiesLayer.Model.AppUserRole", b =>
@@ -168,7 +171,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("ChatApp.EntitiesLayer.Model.Message", b =>
@@ -212,7 +215,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasIndex("authorId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("ChatApp.EntitiesLayer.Model.OnlineAppUsers", b =>
@@ -237,7 +240,7 @@ namespace ChatApp.DataAccesLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OnlineUsers", (string)null);
+                    b.ToTable("OnlineUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

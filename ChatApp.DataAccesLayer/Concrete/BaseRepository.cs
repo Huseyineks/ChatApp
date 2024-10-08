@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,6 +41,20 @@ namespace ChatApp.DataAccesLayer.Concrete
         public List<T> GetAll()
         {
             return _dbSet.ToList();
+        }
+
+        public List<T> GetList(Expression<Func<T, bool>> filter)
+        {
+            List<T> list = _dbSet.Where(filter).ToList();
+
+            return list;
+        }
+
+        public T Get(Expression<Func<T, bool>> filter)
+        {
+            T entity = _dbSet.FirstOrDefault(filter);
+
+            return entity;
         }
     }
 }

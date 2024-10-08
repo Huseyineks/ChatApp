@@ -4,6 +4,7 @@ using ChatApp.EntitiesLayer.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,11 @@ namespace ChatApp.BusinessLogicLayer.Concrete
             var sortedData = _messageRepository.GetSortedData();
 
             return sortedData;
+        }
+
+        public List<Message> GetSortedList(Func<Message, bool> filter)
+        {
+           return _messageRepository.GetSortedList(filter);
         }
     }
 }

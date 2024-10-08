@@ -331,7 +331,7 @@ function dropdownEventListener(list) {
 
 }
 
-function repliedMessageEventListener(box) {
+function repliedMessageEventListener(box) {   
 
     box.addEventListener("click", function (event) {
 

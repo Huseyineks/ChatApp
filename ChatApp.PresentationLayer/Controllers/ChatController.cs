@@ -1,7 +1,7 @@
 ﻿using ChatApp.BusinessLogicLayer.Abstract;
 using ChatApp.BusinessLogicLayer.DTOs;
 using ChatApp.BusinessLogicLayer.VMs;
-using ChatApp.DataAccesLayer.Migrations;
+
 using ChatApp.EntitiesLayer.Interfaces;
 using ChatApp.EntitiesLayer.Model;
 using ChatApp.PresentationLayer.Hubs;
@@ -57,7 +57,7 @@ namespace ChatApp.PresentationLayer.Controllers
             {
                 MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
                 {
-                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
+                    AmountOfNotSeenMsg = _messageService.GetList(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).Count(),
                     receiverGuid = user.RowGuid
                 };
                 messagesNot.Add(messageNotificationsDTO);
@@ -84,7 +84,7 @@ namespace ChatApp.PresentationLayer.Controllers
 
             AppUser hostUserWithGroups = _userManager.Users.Include(i => i.Groups).ThenInclude(i => i.Group).FirstOrDefault(i => i.Id == hostUser.Id);
 
-            var oldUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
+            var oldUser = _onlineUsersService.Get(i => i.userGuid == hostUser.RowGuid); 
 
             if (oldUser != null)
             {
@@ -103,20 +103,20 @@ namespace ChatApp.PresentationLayer.Controllers
 
             AppUser author = hostUser;
 
-            IReceiver receiver = _userManager.Users.AsQueryable().SingleOrDefault(i => i.RowGuid == guid);
+            IReceiver receiver = _userManager.Users.AsQueryable(). FirstOrDefault(i => i.RowGuid == guid);
 
             List<Message> ReceiverMessages = new List<Message>();
             if (receiver == null)
             {
                  receiver = _userGroupService.GetGroup(guid);
 
-                ReceiverMessages = _messageService.GetSortedData().Where(i => i.receiverGuid == guid && i.authorGuid != hostUser.RowGuid).ToList();
+                ReceiverMessages = _messageService.GetSortedList(i => i.authorGuid == guid && i.receiverGuid == hostUser.RowGuid);
 
 
             }
             else {
 
-                ReceiverMessages = _messageService.GetSortedData().Where(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid).ToList();
+                ReceiverMessages = _messageService.GetSortedList(i => i.authorGuid == receiver.RowGuid && i.receiverGuid == hostUser.RowGuid);
 
 
             }
@@ -126,7 +126,7 @@ namespace ChatApp.PresentationLayer.Controllers
             {
                 MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
                 {
-                    AmountOfNotSeenMsg = _messageService.GetAll().Where(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).ToList().Count(),
+                    AmountOfNotSeenMsg = _messageService.GetList(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).Count(),
                     receiverGuid = user.RowGuid
                 };
                 messagesNot.Add(messageNotificationsDTO);
@@ -136,7 +136,7 @@ namespace ChatApp.PresentationLayer.Controllers
                 Users = Users,
                 Receiver = receiver,
                 Author = author,
-                AuthorMessages = _messageService.GetSortedData().Where(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid).ToList(),
+                AuthorMessages = _messageService.GetSortedList(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid),
                 ReceiverMessages = ReceiverMessages,
                 Notifications = messagesNot,
                 Groups = hostUserWithGroups?.Groups.ToList()
@@ -148,7 +148,7 @@ namespace ChatApp.PresentationLayer.Controllers
         [HttpPost]
         public JsonResult MessageNotification(int messageId)
         {
-            var message = _messageService.GetAll().FirstOrDefault(i => i.Id  == messageId);
+            var message = _messageService.Get(i => i.Id  == messageId);
 
             if (message != null)
             {
@@ -167,7 +167,7 @@ namespace ChatApp.PresentationLayer.Controllers
 
         public JsonResult DeleteMessage(int messageId)
         {
-            var message = _messageService.GetAll().FirstOrDefault(i => i.Id == messageId);
+            var message = _messageService.Get(i => i.Id == messageId);
 
             message.Status = MessageStatus.Deleted;
             message.message = "This message is deleted.";
@@ -181,17 +181,17 @@ namespace ChatApp.PresentationLayer.Controllers
 
         public async Task<JsonResult> ForwardMessage(Guid authorGuid,List<Guid> usersGuid,string message)
         {
-            var onlineUsers = _onlineUsersService.GetAll();
+            var authorId =  int.Parse(_userManager.GetUserId(User));
 
             var connectionIds = new List<string>();
 
-            var authorUser = onlineUsers.FirstOrDefault(i => i.userGuid == authorGuid);
+            var authorUser = _onlineUsersService.Get(i => i.userGuid == authorGuid);
 
             Message newMessage = new Message();
 
             foreach(var userGuid in usersGuid)
             {
-            var onlineUser = onlineUsers.FirstOrDefault(i => i.userGuid == userGuid);
+                var onlineUser = _onlineUsersService.Get(i => i.userGuid == userGuid);
 
                 if (onlineUser != null)
                 {
@@ -206,7 +206,8 @@ namespace ChatApp.PresentationLayer.Controllers
                             authorGuid = authorGuid,
                             receiverGuid = userGuid,
                             message = message,
-                            Status = MessageStatus.Seen
+                            Status = MessageStatus.Seen,
+                            authorId = authorId
                         };
                         
                     }
@@ -217,7 +218,8 @@ namespace ChatApp.PresentationLayer.Controllers
                             authorGuid = authorGuid,
                             receiverGuid = userGuid,
                             message = message,
-                            Status = MessageStatus.NotSeen
+                            Status = MessageStatus.NotSeen,
+                            authorId = authorId
                         };
                        
 
@@ -232,8 +234,9 @@ namespace ChatApp.PresentationLayer.Controllers
                         authorGuid = authorGuid,
                         receiverGuid = userGuid,
                         message = message,
-                        Status = MessageStatus.NotSeen
-                    };
+                        Status = MessageStatus.NotSeen,
+                         authorId = authorId
+                     };
                    
                 }
 

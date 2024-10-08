@@ -3,6 +3,7 @@ using ChatApp.DataAccesLayer.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,16 @@ namespace ChatApp.BusinessLogicLayer.Concrete
         public void Save()
         {
             _repository.Save();
+        }
+
+        public List<T> GetList(Expression<Func<T, bool>> filter)
+        {
+            return _repository.GetList(filter);
+        }
+
+        public T Get(Expression<Func<T, bool>> filter)
+        {
+            return _repository.Get(filter);
         }
     }
 }

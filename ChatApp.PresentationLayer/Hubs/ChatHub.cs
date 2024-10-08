@@ -1,5 +1,6 @@
 ﻿using ChatApp.BusinessLogicLayer.Abstract;
-using ChatApp.DataAccesLayer.Migrations;
+using ChatApp.DataAccesLayer.Data;
+
 using ChatApp.EntitiesLayer.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -16,12 +17,15 @@ namespace ChatApp.PresentationLayer.Hubs
         private readonly IMessageService _messageService;
 
         private readonly IUserGroupService _userUserGroupService;
+
+        
         public ChatHub(UserManager<AppUser> userManager, IOnlineUsersService onlineUsersService,IMessageService messageService,IUserGroupService userGroupService) { 
 
             _userManager = userManager;
             _onlineUsersService = onlineUsersService;
             _messageService = messageService;
             _userUserGroupService = userGroupService;
+            
         
         }
         public async Task SendMessage(Guid authorGuid,Guid receiverGuid,string message,int? replyingMessageId)
@@ -49,7 +53,9 @@ namespace ChatApp.PresentationLayer.Hubs
 
                     replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
 
-                    repliedMessageId = rmsg?.Id
+                    repliedMessageId = rmsg?.Id,
+
+                    authorId = int.Parse(Context.UserIdentifier)
                     
                     
                     
@@ -80,7 +86,9 @@ namespace ChatApp.PresentationLayer.Hubs
 
 					replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
 
-                    repliedMessageId = rmsg?.Id
+                    repliedMessageId = rmsg?.Id,
+
+                     authorId = int.Parse(Context.UserIdentifier)
 
 
 
@@ -106,17 +114,23 @@ namespace ChatApp.PresentationLayer.Hubs
             var usersWithGroup = _userUserGroupService.GetUsers(receiverGuid).Where(i => i.RowGuid != authorGuid).ToList();
 
             var onlineUsers = _onlineUsersService.GetAll();
-                Message newMessage = new Message()
-                {
-                    authorGuid = authorGuid,
-                    receiverGuid = receiverGuid,
-                    message = message,
-                    Status = MessageStatus.Seen
-                };
 
-            _messageService.Add(newMessage);
+            Message newMessageSended = new Message() // this is for the one Who sended the message
+            {
+                authorGuid = authorGuid,
+                receiverGuid = receiverGuid,
+                message = message,
+                Status = MessageStatus.Seen,
+                authorId =int.Parse(Context.UserIdentifier)
+            };
+           
 
-            _messageService.Save();
+
+
+
+
+
+
 
             List<string> connectionIds = new List<string>();
 
@@ -124,23 +138,64 @@ namespace ChatApp.PresentationLayer.Hubs
             {
                 var onlineUser = onlineUsers.FirstOrDefault(i => i.userGuid == user.RowGuid);
 
-                if(onlineUser != null)
+                Message newMessageReceived = new Message()
+                {
+                    authorGuid = receiverGuid, // since we are working on groups now, to get past messages later from group this authorGuid is equal to groupguid and that means message sended by group
+                    receiverGuid = user.RowGuid,
+                    message = message,
+                    authorId = int.Parse(Context.UserIdentifier) // this guid is equal to guid of author from group
+                };
+                _messageService.Add(newMessageSended);
+
+                if (onlineUser != null)
                 {
                     connectionIds.Add(onlineUser.userConnectionId);
-                }
 
+                    if (onlineUser.receiverGuid == receiverGuid)
+                    {
+
+
+                        newMessageReceived.Status = MessageStatus.Seen;
+                        
+                       
+                    }
+                    else
+                    {
+
+                        newMessageReceived.Status = MessageStatus.NotSeen;
+                        
+                        
+                    }
+                }
+                else
+                {
+
+                    newMessageReceived.Status = MessageStatus.NotSeen;
+                    
+                    
+                }
+               
+
+                _messageService.Add(newMessageReceived);
+               
 
             }
 
 
 
+            
+            
+                _messageService.Save();
+           
 
-            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessage.Id);
 
 
-            await Clients.Caller.SendAsync("CallerMessage",message,null,newMessage.Id,null);
+            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessageSended.Id);
 
 
+            await Clients.Caller.SendAsync("CallerMessage",message,null,newMessageSended.Id,null);
+
+            
         }
         
 
