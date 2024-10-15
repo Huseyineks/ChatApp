@@ -34,6 +34,10 @@ namespace ChatApp.BusinessLogicLayer.Concrete
 
         }
 
+        public List<Group> GetGroups(int id)
+        {
+            return _userGroupRepository.GetGroups(id);
+        }
 
         public List<AppUser> GetUsers(Guid guid)
         {

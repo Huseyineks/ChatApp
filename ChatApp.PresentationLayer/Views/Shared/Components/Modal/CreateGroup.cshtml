@@ -1,0 +1,67 @@
+﻿@model ChatPartialViewModel
+
+
+
+
+<div class="modal" id="createGroupModal">
+
+
+
+
+
+    <div class="modal-content">
+
+        <h3 style="padding:15px;">Create A Group</h3>
+
+        <hr>
+        <div class="container">
+
+            <label for="groupImage" style="display:block;">Choose an image</label>
+            <input type="file" placeholder="Choose an ımage" id="groupImage">
+
+            <input type="text" placeholder="Enter a group name" class="col-12" id="groupName" style="padding:10px; margin-bottom:3px;" />
+
+
+
+        </div>
+        <div class="modal-scrollbar">
+            @foreach (var user in Model.Users)
+            {
+
+                <div class="modal-list">
+
+                    <div style="display:flex; justify-content:flex-start;">
+                        <img class="img-fluid rounded-circle n-image" src="~/Images/@user.UserImage" alt="...">
+                        <p class="n-name" style="margin-left:10px; margin-bottom:10px;">@user.UserName</p>
+                    </div>
+
+                    <div>
+
+                        <input type="checkbox" value="@user.RowGuid" id="checkBoxButton" style="height:20px; width:20px;" />
+
+                    </div>
+
+
+                </div>
+
+
+
+            }
+
+           
+
+
+        </div>
+
+
+
+
+        <button class="modal-button" disabled id="createGroupButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+            </svg>
+        </button>
+
+    </div>
+
+</div>

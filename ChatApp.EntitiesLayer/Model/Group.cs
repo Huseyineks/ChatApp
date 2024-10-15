@@ -31,7 +31,7 @@ namespace ChatApp.EntitiesLayer.Model
         public virtual List<AppUserGroup>? Users { get; set; }
 
 
-
+        
 
 
 

@@ -31,6 +31,8 @@ namespace ChatApp.EntitiesLayer.Model
 
         public int authorId { get; set; }
 
+       
+
         
     }
 }

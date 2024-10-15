@@ -30,7 +30,9 @@ namespace ChatApp.PresentationLayer.Controllers
 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ChatController(UserManager<AppUser> userManager,IMessageService messageService, IOnlineUsersService onlineUsersService,IHubContext<ChatHub> hubContext, IGroupService groupService, IUserGroupService userGroupService, IWebHostEnvironment webHostEnvironment)
+        private readonly IUserService _userService;
+
+        public ChatController(UserManager<AppUser> userManager,IMessageService messageService, IOnlineUsersService onlineUsersService,IHubContext<ChatHub> hubContext, IGroupService groupService, IUserGroupService userGroupService, IWebHostEnvironment webHostEnvironment,IUserService userService)
         {
             _userManager = userManager;
             _messageService = messageService;
@@ -39,50 +41,24 @@ namespace ChatApp.PresentationLayer.Controllers
             _groupService = groupService;
             _userGroupService = userGroupService;
             _webHostEnvironment = webHostEnvironment;
+            _userService = userService;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var hostUser = await _userManager.GetUserAsync(User);
-            var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
+           
 
-
-            AppUser hostUserWithGroups = _userManager.Users.Include(i => i.Groups).ThenInclude(i => i.Group).FirstOrDefault(i => i.Id == hostUser.Id);
-
-         
-
-
-            List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
-
-            foreach (var user in Users)
-            {
-                MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
-                {
-                    AmountOfNotSeenMsg = _messageService.GetList(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).Count(),
-                    receiverGuid = user.RowGuid
-                };
-                messagesNot.Add(messageNotificationsDTO);
-            }
-            
-            ChatViewModel chatViewModel = new ChatViewModel()
-            {
-                Users = Users,
-                Notifications = messagesNot,
-                Groups = hostUserWithGroups.Groups.ToList()
-                
-            };
-
-
-            return View(chatViewModel);
+            return View();
         }
 
 
         public async Task<IActionResult> Text(Guid guid) {
 
-            var hostUser = await _userManager.GetUserAsync(User);
+            var hostUser = await  _userService.GetHostUser();
 
-            var Users = _userManager.Users.AsQueryable().Where(i => i.RowGuid != hostUser.RowGuid).ToList();
 
-            AppUser hostUserWithGroups = _userManager.Users.Include(i => i.Groups).ThenInclude(i => i.Group).FirstOrDefault(i => i.Id == hostUser.Id);
+            var Users = _userService.GetFilteredList(i => i.RowGuid != hostUser.RowGuid);
+
+            AppUser hostUserWithGroups = _userService.IncludeGroup(i => i.Id == hostUser.Id);
 
             var oldUser = _onlineUsersService.Get(i => i.userGuid == hostUser.RowGuid); 
 
@@ -101,9 +77,9 @@ namespace ChatApp.PresentationLayer.Controllers
             _onlineUsersService.Save();
 
 
-            AppUser author = hostUser;
+            
 
-            IReceiver receiver = _userManager.Users.AsQueryable(). FirstOrDefault(i => i.RowGuid == guid);
+            IReceiver receiver = _userService.Get(i => i.RowGuid == guid);
 
             List<Message> ReceiverMessages = new List<Message>();
             if (receiver == null)
@@ -121,25 +97,14 @@ namespace ChatApp.PresentationLayer.Controllers
 
             }
 
-            List<MessageNotificationsDTO> messagesNot = new List<MessageNotificationsDTO>();
-            foreach (var user in Users)
-            {
-                MessageNotificationsDTO messageNotificationsDTO = new MessageNotificationsDTO()
-                {
-                    AmountOfNotSeenMsg = _messageService.GetList(i => i.authorGuid == user.RowGuid && i.receiverGuid == hostUser.RowGuid && i.Status == MessageStatus.NotSeen).Count(),
-                    receiverGuid = user.RowGuid
-                };
-                messagesNot.Add(messageNotificationsDTO);
-            }
+           
             ChatViewModel chatViewModel = new ChatViewModel()
             {
                 Users = Users,
                 Receiver = receiver,
-                Author = author,
                 AuthorMessages = _messageService.GetSortedList(i => i.authorGuid == hostUser.RowGuid && i.receiverGuid == receiver.RowGuid),
                 ReceiverMessages = ReceiverMessages,
-                Notifications = messagesNot,
-                Groups = hostUserWithGroups?.Groups.ToList()
+                
             };        
             return View(chatViewModel);
         
@@ -179,19 +144,45 @@ namespace ChatApp.PresentationLayer.Controllers
 
         [HttpPost]
 
-        public async Task<JsonResult> ForwardMessage(Guid authorGuid,List<Guid> usersGuid,string message)
+        public async Task<JsonResult> ForwardMessage(List<Guid> usersGuid,string message)
         {
-            var authorId =  int.Parse(_userManager.GetUserId(User));
+            var hostUser = await _userService.GetHostUser();
+
+            Guid authorGuid = hostUser.RowGuid;
+
+            var hostUserGroups = _userGroupService.GetGroups(hostUser.Id);
 
             var connectionIds = new List<string>();
 
             var authorUser = _onlineUsersService.Get(i => i.userGuid == authorGuid);
 
-            Message newMessage = new Message();
+           
 
-            foreach(var userGuid in usersGuid)
+            Message newMessage = null;
+            
+            foreach (var userGuid in usersGuid)
             {
+                if (hostUserGroups.Any(i => i.RowGuid == userGuid))
+                {
+                    
+                    ForwardMessageToGroup(userGuid, message);
+
+                    continue;
+                    
+                }
+                
                 var onlineUser = _onlineUsersService.Get(i => i.userGuid == userGuid);
+
+                 newMessage = new Message()
+                {
+                    authorGuid = authorGuid,
+
+                    message = message,
+
+                    authorId = hostUser.Id,
+
+                    receiverGuid = userGuid
+                };
 
                 if (onlineUser != null)
                 {
@@ -201,27 +192,16 @@ namespace ChatApp.PresentationLayer.Controllers
 
                     if(onlineUser.receiverGuid == authorGuid)
                     {
-                         newMessage = new Message()
-                        {
-                            authorGuid = authorGuid,
-                            receiverGuid = userGuid,
-                            message = message,
-                            Status = MessageStatus.Seen,
-                            authorId = authorId
-                        };
+                        
+                        
+                        newMessage.Status = MessageStatus.Seen;
                         
                     }
                     else
                     {
-                         newMessage = new Message()
-                        {
-                            authorGuid = authorGuid,
-                            receiverGuid = userGuid,
-                            message = message,
-                            Status = MessageStatus.NotSeen,
-                            authorId = authorId
-                        };
-                       
+                     
+                        
+                        newMessage.Status = MessageStatus.NotSeen;
 
                     }
                     
@@ -229,15 +209,10 @@ namespace ChatApp.PresentationLayer.Controllers
                 }
                 else {
 
-                     newMessage = new Message()
-                    {
-                        authorGuid = authorGuid,
-                        receiverGuid = userGuid,
-                        message = message,
-                        Status = MessageStatus.NotSeen,
-                         authorId = authorId
-                     };
                    
+                    
+                    newMessage.Status = MessageStatus.NotSeen;
+
                 }
 
 
@@ -265,18 +240,104 @@ namespace ChatApp.PresentationLayer.Controllers
 
             return Json(Ok());
         }
+        
+        public async Task ForwardMessageToGroup(Guid guid, string message)
+        {
+
+            var hostUser = await _userService.GetHostUser();
+
+            var onlineUsers = _onlineUsersService.GetAll();
+
+            var Users = _userGroupService.GetUsers(guid).Where(i => i.RowGuid != hostUser.RowGuid).ToList();
+
+
+            var authorUser = onlineUsers.FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
+
+            Message newMessageSent = new Message()
+            {
+                authorGuid = hostUser.RowGuid,
+                receiverGuid = guid,
+                Status = MessageStatus.Seen,
+                message = message,
+                authorId = hostUser.Id
+            };
+            _messageService.Add(newMessageSent);
+            _messageService.Save();
+            Message newMessageReceived = null;
+
+            List<string> connectionIds = new List<string>();
+
+            foreach(var user in Users)
+            {
+                var onlineUser = onlineUsers.FirstOrDefault(i => i.userGuid == user.RowGuid);
+
+                newMessageReceived = new Message()
+                {
+                    
+                    authorGuid = guid,
+                    receiverGuid = user.RowGuid,
+                    message = message,
+                    authorId = hostUser.Id
+                    
+
+                };
+
+                
+                if(onlineUser != null)
+                {
+                    connectionIds.Add(onlineUser.userConnectionId);
+
+                    if(onlineUser.receiverGuid == guid)
+                    {
+                        newMessageReceived.Status = MessageStatus.Seen;
+                    }
+                    else
+                    {
+                        newMessageReceived.Status = MessageStatus.NotSeen;
+                    }
+                    
+                }
+                else
+                {
+                    newMessageReceived.Status = MessageStatus.NotSeen;
+                }
+
+                
+                _messageService.Add(newMessageReceived);
+                _messageService.Save();
+
+               
+
+
+
+            }
+
+            await _hubContext.Clients.Clients(connectionIds).SendAsync("GroupMessage", message, guid, newMessageSent.Id, null, null, null);
+
+            if(authorUser.receiverGuid == guid)
+            {
+                await _hubContext.Clients.Client(authorUser.userConnectionId).SendAsync("CallerMessage", message, null, newMessageSent.Id, null);
+            }
+
+
+
+
+
+
+            
+        }
 
         [HttpPost]
 
         public async Task<JsonResult> CreateGroup(List<Guid> usersGuid,string groupName, IFormFile groupImage)
         {
 
-            var hostUser = await _userManager.GetUserAsync(User);
+            var hostUser = await _userService.GetHostUser();
 
 
             usersGuid.Add(hostUser.RowGuid);
 
-            var users =  _userManager.Users.Where(i => usersGuid.Contains(i.RowGuid)).ToList();
+            var users = _userService.GetFilteredList(i => usersGuid.Contains(i.RowGuid));
 
             Group newGroup = new Group()
             {

@@ -136,7 +136,7 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
     
 });
 
-connection.on("GroupMessage", function (message,receiverGuid,messageId) {
+connection.on("GroupMessage", function (message, receiverGuid, messageId, replyingMessage ,replyingTo, repliedMessageId) {
 
    
     var guid = document.getElementById("hiddenReceiverGuid").value;
@@ -180,13 +180,86 @@ connection.on("GroupMessage", function (message,receiverGuid,messageId) {
         msg_div.className = "msg";
         document.getElementById("messagesList").appendChild(div);
         div.appendChild(msg_div);
+
+        if (replyingMessage != null) {
+
+            var chatRepliedBox = document.createElement("div");
+
+            chatRepliedBox.className = "chat-replied-box";
+
+            chatRepliedBox.classList.add(replyingTo == "self" ? "received" : "sended");
+
+            chatRepliedBox.setAttribute("data-id", repliedMessageId);
+
+            var chatReplied = document.createElement("div");
+
+            chatReplied.className = "chat-replied";
+
+            var figure = document.createElement("div");
+
+            figure.className = "figure";
+
+            msg_div.appendChild(chatRepliedBox);
+
+            chatRepliedBox.appendChild(figure);
+            chatRepliedBox.appendChild(chatReplied);
+
+            chatReplied.textContent = replyingMessage;
+
+            repliedMessageEventListener(chatRepliedBox);
+
+        }
+
         msg_div.appendChild(p);
         p.textContent = `${message}`;
 
+        replyBoxEventListener(div.querySelector(".reply"));
 
+        deleteBoxEventListener(div.querySelector(".delete"));
+
+        forwardBoxEventListener(div.querySelector(".forward"));
+
+        receivedMessageEventListener(div);
+
+        dropdownEventListener(div.querySelector(".choices"));
 
 
         div.scrollIntoView(true);
+
+
+    }
+    else {
+
+
+        var notificationsBox = document.getElementById("notifications-box-" + receiverGuid);
+
+
+
+
+
+
+        if (notificationsBox == null) {
+
+            var userBox = document.getElementById("userBox-" + receiverGuid);
+            var newDiv = document.createElement("div");
+
+            newDiv.id = "notifications-box-" + receiverGuid;
+            newDiv.className = "not-seen-msg";
+
+            userBox.appendChild(newDiv);
+
+            newDiv.textContent = "1";
+
+        }
+        else {
+            var currentValue = parseInt(notificationsBox.textContent);
+
+            currentValue += 1;
+
+            notificationsBox.textContent = currentValue;
+        }
+
+
 
 
     }
@@ -317,7 +390,7 @@ messageInput.addEventListener("input", function (event) {
 
 button.addEventListener("click", function (event) {
     var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
-    var authorGuid = document.getElementById("hiddenAuthorGuid").value;
+    
     
     var message = messageInput.value;
     console.log("Message:", message);
@@ -337,14 +410,14 @@ button.addEventListener("click", function (event) {
     var type = document.getElementById("GroupOrPrivate");
 
     if (type.value == "Private") {
-        connection.invoke("SendMessage", authorGuid, receiverGuid, message, replyingToMessageId).catch(function (err) {
+        connection.invoke("SendMessage", receiverGuid, message, replyingToMessageId).catch(function (err) {
 
             return console.error(err.toString());
         });
 
     } else if(type.value == "Group") {
 
-        connection.invoke("SendMessageToGroup", message, authorGuid, receiverGuid).catch(function (err) {
+        connection.invoke("SendMessageToGroup", message, receiverGuid, replyingToMessageId).catch(function (err) {
 
             return console.error(err.toString());
         });

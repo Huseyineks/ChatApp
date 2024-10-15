@@ -28,6 +28,8 @@ builder.Services.AddScoped<IUserGroupService,UserGroupService>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IUserGroupRepository, UserGroupRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthorization(options =>
 {

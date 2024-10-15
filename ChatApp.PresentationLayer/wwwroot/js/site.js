@@ -604,14 +604,14 @@ function startEventListener() {
 
         forwardMessageButton.disabled = true;
 
-        var authorGuid = document.getElementById("hiddenAuthorGuid").value;
+        
 
         $.ajax({
 
             type: "POST",
             url: "/Chat/ForwardMessage",
             dataType: "json",
-            data: { usersGuid: usersGuid, message: forwardMessageButton.value, authorGuid: authorGuid },
+            data: { usersGuid: usersGuid, message: forwardMessageButton.value },
 
             success: function (result) {
 

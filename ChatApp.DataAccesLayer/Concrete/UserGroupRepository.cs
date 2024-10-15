@@ -34,6 +34,12 @@ namespace ChatApp.DataAccesLayer.Concrete
 
 
         }
+        public List<Group> GetGroups(int id)
+        {
+            var Groups = _db.UserGroups.Include(i => i.User).Where(i => i.AppUserId == id).Select(i => i.Group).ToList();
+
+            return Groups;
+        }
 
         public List<AppUser> GetUsers(Guid guid)
         {

@@ -12,5 +12,7 @@ namespace ChatApp.DataAccesLayer.Abstract
         public Group GetGroup(Guid guid);
 
         public List<AppUser> GetUsers(Guid guid);
+
+        public List<Group> GetGroups(int id);
     }
 }
