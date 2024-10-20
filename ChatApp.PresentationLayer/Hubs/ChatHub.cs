@@ -39,34 +39,37 @@ namespace ChatApp.PresentationLayer.Hubs
             Guid authorGuid = hostUser.RowGuid;
 
               var onlineUser = _onlineUsersService.GetAll().FirstOrDefault(i => i.userGuid == receiverGuid);
-            Message newMessage;
+          
             
             
             var rmsg = _messageService.Get(i => i.Id == replyingMessageId);
+
+            Message newMessage = new Message()
+            {
+                receiverGuid = receiverGuid,
+
+                authorGuid = authorGuid,
+
+                message = message,
+
+                replyingToMessage = rmsg?.message,
+
+                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+
+                repliedMessageId = rmsg?.Id,
+
+                authorId = int.Parse(Context.UserIdentifier),
+
+                messageType = "Private",
+
+                groupMessageId = 0
+            };
+
             if (onlineUser == null || onlineUser.receiverGuid != authorGuid )
             {
-                 newMessage = new Message()
-                {
-                    receiverGuid = receiverGuid,
-
-                    authorGuid = authorGuid,
-
-                    Status = MessageStatus.NotSeen,
-                   
-                    message = message,
-
-                    replyingToMessage = rmsg?.message,
-
-                    replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
-
-                    repliedMessageId = rmsg?.Id,
-
-                    authorId = int.Parse(Context.UserIdentifier)
-                    
-                    
-                    
-
-                };
+                
+                newMessage.Status = MessageStatus.NotSeen;
+               
 
                 _messageService.Add(newMessage);
                 _messageService.Save();
@@ -78,28 +81,8 @@ namespace ChatApp.PresentationLayer.Hubs
             }
             else
             {
-                 newMessage = new Message()
-                {
-                    receiverGuid = receiverGuid,
-
-                    authorGuid = authorGuid,
-
-                    Status = MessageStatus.Seen,
-
-                    message = message,
-
-                    replyingToMessage= rmsg?.message,
-
-					replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
-
-                    repliedMessageId = rmsg?.Id,
-
-                     authorId = int.Parse(Context.UserIdentifier)
-
-
-
-
-                 };
+               
+                newMessage.Status = MessageStatus.Seen;
 
                 _messageService.Add(newMessage);
                 _messageService.Save();
@@ -109,7 +92,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
             }
 
-            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id,newMessage.repliedMessageId);
+            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id,newMessage.repliedMessageId,"Private");
 
             
         }
@@ -124,7 +107,11 @@ namespace ChatApp.PresentationLayer.Hubs
 
             var onlineUsers = _onlineUsersService.GetAll();
 
-            var rmsg = _messageService.Get(i => i.Id == replyingMessageId);
+            var rmsg = _messageService.Get(i => i.groupMessageId == replyingMessageId);
+
+            var groupMessageId = _messageService.MaxValueOfGroupMessageId();
+
+            groupMessageId++;
 
             Message newMessageSended = new Message() // this is for the one Who sended the message
             {
@@ -136,8 +123,11 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
 
-                repliedMessageId = rmsg?.Id,
-                authorId =int.Parse(Context.UserIdentifier)
+                repliedMessageId = rmsg?.groupMessageId,
+                authorId = int.Parse(Context.UserIdentifier),
+                messageType = "Group",
+
+                groupMessageId = groupMessageId
             };
 
 
@@ -163,8 +153,12 @@ namespace ChatApp.PresentationLayer.Hubs
 
                     replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
 
-                    repliedMessageId = rmsg?.Id,
-                    authorId = int.Parse(Context.UserIdentifier) // this guid is equal to guid of author from group
+                    repliedMessageId = rmsg?.groupMessageId,
+                    authorId = int.Parse(Context.UserIdentifier), // this guid is equal to guid of author from group
+
+                    messageType = "Group",
+
+                    groupMessageId = groupMessageId
                 };
                
 
@@ -211,10 +205,10 @@ namespace ChatApp.PresentationLayer.Hubs
 
 
 
-            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessageSended.Id, rmsg?.message, newMessageSended.replyingTo, newMessageSended.repliedMessageId);
+            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessageSended.groupMessageId, rmsg?.message, newMessageSended.replyingTo, newMessageSended.repliedMessageId);
 
 
-            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessageSended.Id,newMessageSended.repliedMessageId);
+            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessageSended.groupMessageId,newMessageSended.repliedMessageId,"Group");
 
             
         }

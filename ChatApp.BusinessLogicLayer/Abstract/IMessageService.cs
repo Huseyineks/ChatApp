@@ -14,5 +14,11 @@ namespace ChatApp.BusinessLogicLayer.Abstract
 
         public List<Message> GetSortedList(Func<Message, bool> filter);
 
+        public int GetCommonId();
+
+        public int SetNextCommonId();
+
+        public int? MaxValueOfGroupMessageId();
+
     }
 }

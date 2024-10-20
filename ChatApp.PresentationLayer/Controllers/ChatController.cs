@@ -111,9 +111,30 @@ namespace ChatApp.PresentationLayer.Controllers
         }
 
         [HttpPost]
-        public JsonResult MessageNotification(int messageId)
+        public async Task<JsonResult> MessageNotification(int messageId,string messageType)
         {
-            var message = _messageService.Get(i => i.Id  == messageId);
+
+            Message message = null;
+
+            if(messageType == "Group")
+            {
+                var hostUser = await _userService.GetHostUser();
+
+                 message = _messageService.Get(i => i.groupMessageId == messageId && i.receiverGuid == hostUser.RowGuid);
+
+                
+
+                
+                
+            }
+            else
+            {
+                 message = _messageService.Get(i => i.Id == messageId);
+            }
+
+
+
+            
 
             if (message != null)
             {
@@ -130,13 +151,30 @@ namespace ChatApp.PresentationLayer.Controllers
 
         [HttpPost]
 
-        public JsonResult DeleteMessage(int messageId)
+        public JsonResult DeleteMessage(int messageId, string messageType)
         {
-            var message = _messageService.Get(i => i.Id == messageId);
+            if(messageType == "Group")
+            {
+                List<Message> messages = _messageService.GetList(i => i.groupMessageId == messageId);
 
-            message.Status = MessageStatus.Deleted;
-            message.message = "This message is deleted.";
-            _messageService.Update(message);
+                foreach(var msg in messages)
+                {
+                    msg.Status = MessageStatus.Deleted;
+                    msg.message = "This message is deleted.";
+                    _messageService.Update(msg);
+
+                }
+            }
+            else
+            {
+                var message = _messageService.Get(i => i.Id == messageId);
+
+                message.Status = MessageStatus.Deleted;
+                message.message = "This message is deleted.";
+                _messageService.Update(message);
+
+            }
+            
             _messageService.Save();
 
             return Json(Ok());
@@ -181,7 +219,11 @@ namespace ChatApp.PresentationLayer.Controllers
 
                     authorId = hostUser.Id,
 
-                    receiverGuid = userGuid
+                    receiverGuid = userGuid,
+
+                    messageType = "Private",
+
+                    groupMessageId = 0
                 };
 
                 if (onlineUser != null)
@@ -221,9 +263,9 @@ namespace ChatApp.PresentationLayer.Controllers
 
              if(authorUser.receiverGuid == userGuid)
                 {
+                    
 
-
-                    await _hubContext.Clients.Client(authorUser.userConnectionId).SendAsync("CallerMessage", message, null, newMessage.Id, null);
+                    await _hubContext.Clients.Client(authorUser.userConnectionId).SendAsync("CallerMessage", message, null, newMessage.Id, null, "Private");
 
 
                 }
@@ -253,13 +295,19 @@ namespace ChatApp.PresentationLayer.Controllers
 
             var authorUser = onlineUsers.FirstOrDefault(i => i.userGuid == hostUser.RowGuid);
 
+            var groupMessageId = _messageService.MaxValueOfGroupMessageId();
+
+            groupMessageId++;
+
             Message newMessageSent = new Message()
             {
                 authorGuid = hostUser.RowGuid,
                 receiverGuid = guid,
                 Status = MessageStatus.Seen,
                 message = message,
-                authorId = hostUser.Id
+                authorId = hostUser.Id,
+                messageType = "Group",
+                groupMessageId = groupMessageId
             };
             _messageService.Add(newMessageSent);
             _messageService.Save();
@@ -277,7 +325,9 @@ namespace ChatApp.PresentationLayer.Controllers
                     authorGuid = guid,
                     receiverGuid = user.RowGuid,
                     message = message,
-                    authorId = hostUser.Id
+                    authorId = hostUser.Id,
+                    messageType = "Group",
+                    groupMessageId= groupMessageId
                     
 
                 };
@@ -312,11 +362,11 @@ namespace ChatApp.PresentationLayer.Controllers
 
             }
 
-            await _hubContext.Clients.Clients(connectionIds).SendAsync("GroupMessage", message, guid, newMessageSent.Id, null, null, null);
+            await _hubContext.Clients.Clients(connectionIds).SendAsync("GroupMessage", message, guid, newMessageSent.groupMessageId, null, null, null);
 
             if(authorUser.receiverGuid == guid)
             {
-                await _hubContext.Clients.Client(authorUser.userConnectionId).SendAsync("CallerMessage", message, null, newMessageSent.Id, null);
+                await _hubContext.Clients.Client(authorUser.userConnectionId).SendAsync("CallerMessage", message, null, newMessageSent.groupMessageId, null,"Group");
             }
 
 

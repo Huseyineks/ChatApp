@@ -96,7 +96,7 @@
                                     else if (Model.ReceiverMessages[j].Status == MessageStatus.NotSeen)
                                     {
                                         
-                                        <div class="msg-received" data-status="not-seen" data-id=@Model.ReceiverMessages[j].Id>
+                                        <div class="msg-received" data-status="not-seen" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].groupMessageId) : Model.ReceiverMessages[j].Id)>
                                             <div class="dropdown">
                                                 <div class="forward">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
@@ -131,7 +131,7 @@
                                                 {
 
                                                    
-                                                        <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id =@Model.ReceiverMessages[j].repliedMessageId>
+                                                        <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id =@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
 
                                                             <div class="figure"></div>
 
@@ -162,7 +162,7 @@
                                     else
                                     {
 
-                                        <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id>
+                                        <div class="msg-received" data-status="seen" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].groupMessageId) : Model.ReceiverMessages[j].Id)>
                                             <div class="dropdown">
                                                 <div class="forward">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
@@ -195,7 +195,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@Model.ReceiverMessages[j].repliedMessageId>
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
 
                                                         <div class="figure"></div>
 
@@ -225,9 +225,9 @@
                                     {
                                         break;
                                     }
-                                    
-                                    
-                                    <div class="msg-sended" data-id="@Model.AuthorMessages[i].Id">
+
+
+                                    <div class="msg-sended" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].groupMessageId) : Model.AuthorMessages[i].Id)>
                                     
                                        
 
@@ -235,7 +235,7 @@
                                         
                                         @if(Model.AuthorMessages[i].replyingToMessage != null){
 
-                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@Model.AuthorMessages[i].repliedMessageId>
+                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].repliedMessageId) : Model.AuthorMessages[i].repliedMessageId)>
 
                                             <div class="figure"></div>
 
@@ -291,7 +291,7 @@
 
                                 else if(Model.AuthorMessages[i].createdAt < Model.ReceiverMessages[j].createdAt)
                                 {
-                                    <div class="msg-sended" data-id="@Model.AuthorMessages[i].Id">
+                                    <div class="msg-sended" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].groupMessageId) : Model.AuthorMessages[i].Id)>
 
                                        
 
@@ -300,7 +300,7 @@
                                             @if (Model.AuthorMessages[i].replyingToMessage != null)
                                             {
 
-                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@Model.AuthorMessages[i].repliedMessageId>
+                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].repliedMessageId) : Model.AuthorMessages[i].repliedMessageId)>
 
                                                     <div class="figure"></div>
 
@@ -353,7 +353,7 @@
                                 {
                                     if(Model.ReceiverMessages[j].Status == MessageStatus.NotSeen)
                                     {
-                                        <div class="msg-received" data-status="not-seen" data-id=@Model.ReceiverMessages[j].Id>
+                                        <div class="msg-received" data-status="not-seen" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].groupMessageId) : Model.ReceiverMessages[j].Id)>
                                             <div class="dropdown">
                                                 <div class="forward">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
@@ -386,7 +386,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@Model.ReceiverMessages[j].repliedMessageId>
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
 
                                                         <div class="figure"></div>
 
@@ -409,7 +409,7 @@
                                     else
                                     {
 
-                                            <div class="msg-received" data-status="seen" data-id=@Model.ReceiverMessages[j].Id>
+                                        <div class="msg-received" data-status="seen" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].groupMessageId) : Model.ReceiverMessages[j].Id)>
                                             <div class="dropdown">
                                                 <div class="forward">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
@@ -442,7 +442,7 @@
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" id=@Model.ReceiverMessages[j].repliedMessageId>
+                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
 
                                                         <div class="figure"></div>
 

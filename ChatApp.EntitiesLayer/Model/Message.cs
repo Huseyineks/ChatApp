@@ -25,6 +25,10 @@ namespace ChatApp.EntitiesLayer.Model
         public string? replyingToMessage {  get; set; }
 
         public int? repliedMessageId { get; set; }
+
+        public string messageType { get; set; }
+
+        public int? groupMessageId { get; set; }
         //relation
 
         public virtual AppUser Author { get; set; }

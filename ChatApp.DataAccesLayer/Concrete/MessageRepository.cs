@@ -13,6 +13,8 @@ namespace ChatApp.DataAccesLayer.Concrete
     public class MessageRepository : BaseRepository<Message>, IMessageRepository
     {
         private readonly ApplicationDbContext _db;
+
+        private static int _id = 1;
         public MessageRepository(ApplicationDbContext db) : base(db)
         {
 
@@ -37,6 +39,32 @@ namespace ChatApp.DataAccesLayer.Concrete
             return sortedList;
         }
 
-       
+       public int SetNextCommonId()
+        {
+
+
+            _id++;
+
+            return _id;
+        }
+
+    public int GetCommonId()
+        {
+            return _id;
+        }
+
+
+    public int? MaxValueOfGroupMessageId()
+        {
+            var max = _db.Messages.Max(i => i.groupMessageId);
+            
+
+            if(max == null)
+            {
+                return 0;
+            }
+
+            return max;
+        }
     }
 }

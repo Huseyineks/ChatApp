@@ -78,12 +78,24 @@ var observer = new IntersectionObserver(entries => {
 
                 var messageId = entry.target.getAttribute("data-id");
 
+                var messageType;
+
+                if (messageId.includes('G')) {
+
+                    messageId = messageId.split('-')[1];
+
+                    messageType = "Group";
+                } else {
+
+                    messageType = "Private";
+                }
+
                 $.ajax({
 
                     type: "POST",
                     url: "/Chat/MessageNotification",
                     dataType: "json",
-                    data: { messageId: messageId },
+                    data: { messageId: messageId, messageType : messageType },
 
                     success: function (result) {
 
@@ -212,13 +224,23 @@ function deleteBoxEventListener(box) {
         var textBox = parentElement.querySelector(".msg");
         textBox.textContent = "This message is deleted.";
 
+        if (messageId.includes("G")) {
+
+            messageId = messageId.split('-')[1];
+
+            messageType = "Group";
+        } else {
+
+            messageType = "Private";
+        }
+
 
         $.ajax({
 
             type: "POST",
             url: "/Chat/DeleteMessage",
             dataType: "json",
-            data: { messageId: messageId },
+            data: { messageId: messageId, messageType : messageType },
 
             success: function (result) {
 

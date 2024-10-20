@@ -148,7 +148,7 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
         var div = document.createElement("div");
         div.className = "msg-received";
 
-        div.setAttribute("data-id", messageId);
+        div.setAttribute("data-id", "G-" + messageId);
 
         div.innerHTML += ` <div class="dropdown">
                                                 <div class="forward">
@@ -189,7 +189,7 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
 
             chatRepliedBox.classList.add(replyingTo == "self" ? "received" : "sended");
 
-            chatRepliedBox.setAttribute("data-id", repliedMessageId);
+            chatRepliedBox.setAttribute("data-id", "G-" + repliedMessageId);
 
             var chatReplied = document.createElement("div");
 
@@ -268,7 +268,7 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
 
 });
 
-connection.on("CallerMessage", function (message,replyingMessage,messageId,repliedMessageId) {
+connection.on("CallerMessage", function (message,replyingMessage,messageId,repliedMessageId,messageType) {
 
     
 
@@ -278,7 +278,23 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
     var div = document.createElement("div");
     div.className = "msg-sended";
 
-    div.setAttribute("data-id", messageId);
+    var chatRepliedBox = document.createElement("div");
+
+    chatRepliedBox.className = "chat-replied-box";
+    if (messageType == "Group") {
+        div.setAttribute("data-id", "G-" + messageId);
+
+        
+
+        chatRepliedBox.setAttribute("data-id", "G-" + repliedMessageId);
+    }
+    else {
+
+        div.setAttribute("data-id", messageId);
+
+        chatRepliedBox.setAttribute("data-id", repliedMessageId);
+    }
+    
     var msg_div = document.createElement("div");
     msg_div.className = "msg";
     document.getElementById("messagesList").appendChild(div);
@@ -289,11 +305,7 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
 
     if (replyingMessage != null) {
 
-        var chatRepliedBox = document.createElement("div");
-
-        chatRepliedBox.className = "chat-replied-box";
-
-        chatRepliedBox.setAttribute("data-id", repliedMessageId);
+       
 
         chatRepliedBox.classList.add(document.querySelector(".replying-to-message").getAttribute("data-author") == "self" ? "sended" : "received");
 
@@ -403,8 +415,13 @@ button.addEventListener("click", function (event) {
 
     if (replyingToMessageId != null) {
 
-        replyingToMessageId = parseInt(replyingToMessageId);
+        if (replyingToMessageId.includes('G')) {
 
+            replyingToMessageId = parseInt(replyingToMessageId.split('-')[1]);
+
+        }
+
+        replyingToMessageId = parseInt(replyingToMessageId);
     }
 
     var type = document.getElementById("GroupOrPrivate");

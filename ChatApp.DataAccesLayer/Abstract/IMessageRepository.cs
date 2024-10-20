@@ -14,7 +14,16 @@ namespace ChatApp.DataAccesLayer.Abstract
         public List<Message> GetSortedData();
     
         public List<Message> GetSortedList(Func<Message, bool> filter);
-    
+
+         public int SetNextCommonId();
+
+         public int GetCommonId();
+
+        public int? MaxValueOfGroupMessageId();
+
+
+
+
     }
 
      

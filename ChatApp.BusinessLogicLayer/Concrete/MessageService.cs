@@ -30,5 +30,19 @@ namespace ChatApp.BusinessLogicLayer.Concrete
         {
            return _messageRepository.GetSortedList(filter);
         }
+
+        public int SetNextCommonId()
+        {
+            return _messageRepository.SetNextCommonId();
+        }
+        public int GetCommonId()
+        {
+            return _messageRepository.GetCommonId();
+        }
+
+        public int? MaxValueOfGroupMessageId()
+        {
+            return _messageRepository.MaxValueOfGroupMessageId();
+        }
     }
 }

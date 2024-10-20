@@ -16,6 +16,8 @@ namespace ChatApp.DataAccesLayer.Abstract
 
         public void Remove(T entity);
 
+        public void RemoveRange(List<T> entities);
+
         public List<T> GetAll();
 
         public List<T> GetList(Expression<Func<T, bool>> filter);

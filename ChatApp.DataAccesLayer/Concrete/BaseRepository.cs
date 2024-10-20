@@ -30,6 +30,11 @@ namespace ChatApp.DataAccesLayer.Concrete
             _dbSet.Remove(entity);
         }
 
+        public void RemoveRange(List<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
         public void Update(T entity)
         {
             _dbSet.Update(entity);
