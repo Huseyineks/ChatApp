@@ -1,4 +1,5 @@
 ﻿using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.BusinessLogicLayer.DTOs;
 using ChatApp.DataAccesLayer.Data;
 
 using ChatApp.EntitiesLayer.Model;
@@ -42,7 +43,7 @@ namespace ChatApp.PresentationLayer.Hubs
           
             
             
-            var rmsg = _messageService.Get(i => i.Id == replyingMessageId);
+            var rmsg = _messageService.GetMessageWithAuthor(i => i.Id == replyingMessageId);
 
             Message newMessage = new Message()
             {
@@ -54,7 +55,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 replyingToMessage = rmsg?.message,
 
-                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : rmsg?.Author.Nickname,
 
                 repliedMessageId = rmsg?.Id,
 
@@ -63,6 +64,20 @@ namespace ChatApp.PresentationLayer.Hubs
                 messageType = "Private",
 
                 groupMessageId = 0
+            };
+            var createdAt = newMessage.createdAt.ToString("HH:mm");
+
+
+            ReceiveMessageDTO receiveMessageDTO = new ReceiveMessageDTO()
+            {
+                authorGuid = authorGuid,
+                message = message,
+                repliedMessageId = newMessage.repliedMessageId,
+                replyingMessage = newMessage.replyingToMessage,
+                replyingTo = newMessage.replyingTo,
+                createdAt = createdAt,
+                
+
             };
 
             if (onlineUser == null || onlineUser.receiverGuid != authorGuid )
@@ -74,9 +89,11 @@ namespace ChatApp.PresentationLayer.Hubs
                 _messageService.Add(newMessage);
                 _messageService.Save();
 
+                
+
                 if(onlineUser != null)
                 {
-                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", authorGuid, message);
+                    await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage", receiveMessageDTO);
                 }
             }
             else
@@ -87,12 +104,25 @@ namespace ChatApp.PresentationLayer.Hubs
                 _messageService.Add(newMessage);
                 _messageService.Save();
 
+                receiveMessageDTO.messageId = newMessage.Id;
 
-                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",authorGuid,message,rmsg?.message,newMessage.Id,newMessage.replyingTo,newMessage.repliedMessageId);
+                await Clients.Client(onlineUser.userConnectionId).SendAsync("ReceiveMessage",receiveMessageDTO);
 
             }
+            
 
-            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessage.Id,newMessage.repliedMessageId,"Private");
+            CallerMessageDTO callerMessageDTO = new CallerMessageDTO()
+            {
+                message = message,
+                createdAt = createdAt,
+                messageId = newMessage.Id,
+                repliedMessageId = newMessage.repliedMessageId,
+                replyingMessage = rmsg?.message,
+                messageType = "Private"
+
+            };
+            
+            await Clients.Caller.SendAsync("CallerMessage",callerMessageDTO);
 
             
         }
@@ -107,7 +137,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
             var onlineUsers = _onlineUsersService.GetAll();
 
-            var rmsg = _messageService.Get(i => i.groupMessageId == replyingMessageId);
+            var rmsg = _messageService.GetMessageWithAuthor(i => i.groupMessageId == replyingMessageId);
 
             var groupMessageId = _messageService.MaxValueOfGroupMessageId();
 
@@ -121,7 +151,7 @@ namespace ChatApp.PresentationLayer.Hubs
                 Status = MessageStatus.Seen,
                 replyingToMessage = rmsg?.message,
 
-                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : rmsg?.Author.Nickname,
 
                 repliedMessageId = rmsg?.groupMessageId,
                 authorId = int.Parse(Context.UserIdentifier),
@@ -134,7 +164,7 @@ namespace ChatApp.PresentationLayer.Hubs
             _messageService.Add(newMessageSended);
 
 
-
+            
 
 
 
@@ -146,12 +176,12 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 Message newMessageReceived = new Message()
                 {
-                    authorGuid = receiverGuid, // since we are working on groups now, to get past messages later from group this authorGuid is equal to groupguid and that means message sended by group
+                    authorGuid = receiverGuid, // since we are working on groups now, to get past messages later from group this authorGuid is equal to groupGuid and that means message sended by group
                     receiverGuid = user.RowGuid,
                     message = message,
                     replyingToMessage = rmsg?.message,
 
-                    replyingTo = rmsg?.authorGuid == authorGuid ? "self" : "other",
+                    replyingTo = newMessageSended.authorGuid == rmsg?.authorGuid ? "self" : rmsg?.Author.Nickname,
 
                     repliedMessageId = rmsg?.groupMessageId,
                     authorId = int.Parse(Context.UserIdentifier), // this guid is equal to guid of author from group
@@ -201,14 +231,39 @@ namespace ChatApp.PresentationLayer.Hubs
             
             
                 _messageService.Save();
-           
+
+            var createdAt = newMessageSended.createdAt.ToString("HH:mm");
 
 
+            GroupMessageDTO groupMessageDTO = new GroupMessageDTO()
+            {
+                message = message,
+                messageId = newMessageSended.groupMessageId,
+                receiverGuid = receiverGuid,
+                repliedMessageId = newMessageSended.repliedMessageId,
+                replyingMessage = rmsg?.message,
+                createdAt = createdAt,
+                authorNickname = newMessageSended.Author.Nickname,
+                replyingTo = rmsg?.Author.Nickname
+            };
 
-            await Clients.Clients(connectionIds).SendAsync("GroupMessage", message, receiverGuid, newMessageSended.groupMessageId, rmsg?.message, newMessageSended.replyingTo, newMessageSended.repliedMessageId);
+
+            await Clients.Clients(connectionIds).SendAsync("GroupMessage", groupMessageDTO);
+
+            CallerMessageDTO callerMessageDTO = new CallerMessageDTO()
+            {
+                createdAt = createdAt,
+                message = message,
+                messageId = newMessageSended.groupMessageId,
+                messageType = "Group",
+                repliedMessageId = newMessageSended.repliedMessageId,
+                replyingMessage = rmsg?.message,
+                replyingTo = rmsg?.Author.Nickname
+
+            };
 
 
-            await Clients.Caller.SendAsync("CallerMessage",message,rmsg?.message,newMessageSended.groupMessageId,newMessageSended.repliedMessageId,"Group");
+            await Clients.Caller.SendAsync("CallerMessage",callerMessageDTO);
 
             
         }

@@ -1,4 +1,6 @@
-﻿var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+﻿
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 
 
@@ -8,23 +10,45 @@ var button = document.getElementById("sendButton");
 var messageInput = document.getElementById("messageInput");
 
 
+connection.on("DeleteMessage", function (messageId, messageType) {
+
+    var deletedMessage = document.querySelector(`.msg-received[data-id="${messageId}"], .msg-sended[data-id="${messageId}"]`);
+
+    if (messageType == "Group") {
+
+
+        deletedMessage = document.querySelector(`.msg-received[data-id="G-${messageId}"], .msg-sended[data-id="G-${messageId}"]`);
+
+        
+    }
+   
 
 
 
-connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,messageId,replyingTo,repliedMessageId) {
+
+
+    deletedMessage.querySelector("p").textContent = "This message is deleted.";
+
+
+
+
+});
+
+
+connection.on("ReceiveMessage", function (messageDTO) {
 
         
         var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
     
-    if (authorGuid == receiverGuid) {
+    if (messageDTO.authorGuid == receiverGuid) {
 
 
         var p = document.createElement("p");
         var div = document.createElement("div");
         div.className = "msg-received";
 
-        div.setAttribute("data-id", messageId);
+        div.setAttribute("data-id", messageDTO.messageId);
 
         div.innerHTML += ` <div class="dropdown">
                                                 <div class="forward">
@@ -56,15 +80,17 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
         msg_div.className = "msg";
         document.getElementById("messagesList").appendChild(div);
         div.appendChild(msg_div);
-        if (replyingMessage != null) {
+
+       
+        if (messageDTO.replyingMessage != null) {
 
             var chatRepliedBox = document.createElement("div");
 
             chatRepliedBox.className = "chat-replied-box";
 
-            chatRepliedBox.classList.add(replyingTo == "self" ? "received" : "sended");
+            chatRepliedBox.classList.add(messageDTO.replyingTo == "self" ? "received" : "sended");
 
-            chatRepliedBox.setAttribute("data-id", repliedMessageId);
+            chatRepliedBox.setAttribute("data-id", messageDTO.repliedMessageId);
 
             var chatReplied = document.createElement("div");
 
@@ -79,14 +105,23 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
             chatRepliedBox.appendChild(figure);
             chatRepliedBox.appendChild(chatReplied);
 
-            chatReplied.textContent = replyingMessage;
+            chatReplied.textContent = messageDTO.replyingMessage;
 
             repliedMessageEventListener(chatRepliedBox);
 
         }
         msg_div.appendChild(p);
 
-        p.textContent = `${message}`;
+        var createdDiv = document.createElement("div");
+
+        createdDiv.className = "createdAt";
+
+        createdDiv.textContent = messageDTO.createdAt;
+
+        msg_div.appendChild(createdDiv);
+
+
+        p.textContent = `${messageDTO.message}`;
 
 
         replyBoxEventListener(div.querySelector(".reply"));
@@ -104,7 +139,7 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
     }
     else {
 
-        var notificationsBox = document.getElementById("notifications-box-" + authorGuid);
+        var notificationsBox = document.getElementById("notifications-box-" + messageDTO.authorGuid);
 
         
 
@@ -113,10 +148,10 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
 
         if (notificationsBox == null) {
 
-            var userBox = document.getElementById("userBox-" + authorGuid);
+            var userBox = document.getElementById("userBox-" + messageDTO.authorGuid);
             var newDiv = document.createElement("div");
 
-            newDiv.id = "notifications-box-" + authorGuid;
+            newDiv.id = "notifications-box-" + messageDTO.authorGuid;
             newDiv.className = "not-seen-msg";
 
             userBox.appendChild(newDiv);
@@ -136,19 +171,22 @@ connection.on("ReceiveMessage", function (authorGuid, message,replyingMessage,me
     
 });
 
-connection.on("GroupMessage", function (message, receiverGuid, messageId, replyingMessage ,replyingTo, repliedMessageId) {
+connection.on("GroupMessage", function (messageDTO) {
 
    
     var guid = document.getElementById("hiddenReceiverGuid").value;
 
-    if (receiverGuid == guid) {
+    var repliedMessage = document.querySelector(`.msg-received[data-id="G-${messageDTO.repliedMessageId}"], .msg-sended[data-id="G-${messageDTO.repliedMessageId}"]`);
+
+
+    if (messageDTO.receiverGuid == guid) {
 
 
         var p = document.createElement("p");
         var div = document.createElement("div");
         div.className = "msg-received";
 
-        div.setAttribute("data-id", "G-" + messageId);
+        div.setAttribute("data-id", "G-" + messageDTO.messageId);
 
         div.innerHTML += ` <div class="dropdown">
                                                 <div class="forward">
@@ -181,19 +219,47 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
         document.getElementById("messagesList").appendChild(div);
         div.appendChild(msg_div);
 
-        if (replyingMessage != null) {
+        var nicknameDiv = document.createElement("div");
+        nicknameDiv.className = "nickname";
+        nicknameDiv.textContent = messageDTO.authorNickname;
+
+        msg_div.appendChild(nicknameDiv);
+
+        if (messageDTO.replyingMessage != null) {
 
             var chatRepliedBox = document.createElement("div");
 
             chatRepliedBox.className = "chat-replied-box";
 
-            chatRepliedBox.classList.add(replyingTo == "self" ? "received" : "sended");
+            if (repliedMessage.classList.contains('msg-received')) {
 
-            chatRepliedBox.setAttribute("data-id", "G-" + repliedMessageId);
+                chatRepliedBox.classList.add("received");
+            }
+            else {
+
+                chatRepliedBox.classList.add("sended");
+            }
+
+            
+
+            chatRepliedBox.setAttribute("data-id", "G-" + messageDTO.repliedMessageId);
 
             var chatReplied = document.createElement("div");
 
             chatReplied.className = "chat-replied";
+
+            var hostNickname = document.getElementById("hiddenHostNickname").value;
+
+            if (messageDTO.replyingTo != hostNickname && messageDTO.authorNickname != messageDTO.replyingTo) {
+
+                var chatRepliedNickname = document.createElement("div");
+
+                chatRepliedNickname.className = "nickname";
+
+                chatRepliedNickname.textContent = messageDTO.replyingTo;
+
+                chatReplied.appendChild(chatRepliedNickname);
+            }
 
             var figure = document.createElement("div");
 
@@ -204,14 +270,25 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
             chatRepliedBox.appendChild(figure);
             chatRepliedBox.appendChild(chatReplied);
 
-            chatReplied.textContent = replyingMessage;
+            var replyingMessageDiv = document.createElement("div");
+
+            chatReplied.appendChild(replyingMessageDiv);
+
+            replyingMessageDiv.textContent = messageDTO.replyingMessage;
 
             repliedMessageEventListener(chatRepliedBox);
 
         }
 
         msg_div.appendChild(p);
-        p.textContent = `${message}`;
+        var createdDiv = document.createElement("div");
+
+        createdDiv.className = "createdAt";
+
+        createdDiv.textContent = messageDTO.createdAt;
+
+        msg_div.appendChild(createdDiv);
+        p.textContent = `${messageDTO.message}`;
 
         replyBoxEventListener(div.querySelector(".reply"));
 
@@ -231,7 +308,7 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
     else {
 
 
-        var notificationsBox = document.getElementById("notifications-box-" + receiverGuid);
+        var notificationsBox = document.getElementById("notifications-box-" + messageDTO.receiverGuid);
 
 
 
@@ -240,10 +317,10 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
 
         if (notificationsBox == null) {
 
-            var userBox = document.getElementById("userBox-" + receiverGuid);
+            var userBox = document.getElementById("userBox-" + messageDTO.receiverGuid);
             var newDiv = document.createElement("div");
 
-            newDiv.id = "notifications-box-" + receiverGuid;
+            newDiv.id = "notifications-box-" + messageDTO.receiverGuid;
             newDiv.className = "not-seen-msg";
 
             userBox.appendChild(newDiv);
@@ -268,7 +345,7 @@ connection.on("GroupMessage", function (message, receiverGuid, messageId, replyi
 
 });
 
-connection.on("CallerMessage", function (message,replyingMessage,messageId,repliedMessageId,messageType) {
+connection.on("CallerMessage", function (messageDTO) {
 
     
 
@@ -281,18 +358,18 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
     var chatRepliedBox = document.createElement("div");
 
     chatRepliedBox.className = "chat-replied-box";
-    if (messageType == "Group") {
-        div.setAttribute("data-id", "G-" + messageId);
+    if (messageDTO.messageType == "Group") {
+        div.setAttribute("data-id", "G-" + messageDTO.messageId);
 
         
 
-        chatRepliedBox.setAttribute("data-id", "G-" + repliedMessageId);
+        chatRepliedBox.setAttribute("data-id", "G-" + messageDTO.repliedMessageId);
     }
     else {
 
-        div.setAttribute("data-id", messageId);
+        div.setAttribute("data-id", messageDTO.messageId);
 
-        chatRepliedBox.setAttribute("data-id", repliedMessageId);
+        chatRepliedBox.setAttribute("data-id", messageDTO.repliedMessageId);
     }
     
     var msg_div = document.createElement("div");
@@ -303,7 +380,7 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
 
     
 
-    if (replyingMessage != null) {
+    if (messageDTO.replyingMessage != null) {
 
        
 
@@ -312,6 +389,8 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
         var chatReplied = document.createElement("div");
 
         chatReplied.className = "chat-replied";
+
+       
 
         var figure = document.createElement("div");
 
@@ -322,14 +401,48 @@ connection.on("CallerMessage", function (message,replyingMessage,messageId,repli
         chatRepliedBox.appendChild(figure);
         chatRepliedBox.appendChild(chatReplied);
 
-        chatReplied.textContent = replyingMessage;
+        if (messageDTO.messageType == "Group") {
+
+            var hostNickname = document.getElementById("hiddenHostNickname").value;
+
+            if (hostNickname != messageDTO.replyingTo) {
+
+                var chatRepliedNickname = document.createElement("div");
+
+                chatRepliedNickname.className = "nickname";
+                chatRepliedNickname.textContent = messageDTO.replyingTo;
+                
+
+                chatReplied.appendChild(chatRepliedNickname);
+
+                
+
+            }
+        }
+        var replyingMessageDiv = document.createElement("div");
+
+        chatReplied.appendChild(replyingMessageDiv);
+        replyingMessageDiv.textContent = messageDTO.replyingMessage;
+
+        //chatReplied.textContent = messageDTO.replyingMessage;
+        
 
        
 
     }
     msg_div.appendChild(p);
 
-    p.textContent = `${message}`;
+    var createdDiv = document.createElement("div");
+
+    createdDiv.className = "createdAt";
+
+    createdDiv.textContent = messageDTO.createdAt;
+
+    msg_div.appendChild(createdDiv);
+
+
+
+    p.textContent = `${messageDTO.message}`;
 
     div.innerHTML += ` <div class="choices">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
@@ -398,12 +511,11 @@ messageInput.addEventListener("input", function (event) {
 
 });
 
+function handleMessageInput() {
 
-
-button.addEventListener("click", function (event) {
     var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
-    
-    
+
+
     var message = messageInput.value;
     console.log("Message:", message);
 
@@ -432,7 +544,7 @@ button.addEventListener("click", function (event) {
             return console.error(err.toString());
         });
 
-    } else if(type.value == "Group") {
+    } else if (type.value == "Group") {
 
         connection.invoke("SendMessageToGroup", message, receiverGuid, replyingToMessageId).catch(function (err) {
 
@@ -441,18 +553,45 @@ button.addEventListener("click", function (event) {
 
     }
 
-   
 
-    
+
+
 
     replyBox.style.display = "none";
     replyingToMessage.removeAttribute("data-id");
     messageInput.value = "";
     button.disabled = true;
-    
+}
+
+button.addEventListener("click", function (event) {
+
+    handleMessageInput();
     event.preventDefault();
 });
+messageInput.addEventListener("keypress", function (event) {
 
+    
+    var message = messageInput.value;
+
+    if (message == "" || event.key != "Enter") {
+
+        return;
+    }
+    else {
+       
+        handleMessageInput();
+    }
+
+    
+
+
+
+    event.preventDefault();
+
+
+
+
+});
 
 
 

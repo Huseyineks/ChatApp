@@ -127,15 +127,38 @@
                                             
                                             <div class="msg">
 
+                                                @{
+                                                    var messageType = Model.ReceiverMessages[j].messageType;
+                                                    var replyingTo = Model.ReceiverMessages[j].replyingTo;
+                                                    var repliedMessageId = Model.ReceiverMessages[j].repliedMessageId;
+                                                    var nickname = Model.ReceiverMessages[j].Author.Nickname;
+                                                }
+
+
+                                            <div class="nickname">@(messageType == "Group" ? nickname : "")</div>
+
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                   
-                                                        <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id =@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
+
+
+
+
+                                                    <div class="chat-replied-box @((replyingTo == "self" || replyingTo != ViewBag.hostNickname) ? "received" : "sended")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                                             <div class="figure"></div>
 
                                                             <div class="chat-replied">
+                                                            
+                                                            @if(messageType == "Group")
+                                                            {
+
+                                                                <div class="nickname">@((replyingTo == "self" || replyingTo == ViewBag.hostNickname) ? "" : replyingTo)</div>
+                                                                
+                                                            }
+                                                            
+
+                                                            
                                                                 @Model.ReceiverMessages[j].replyingToMessage
                                                             </div>
 
@@ -153,6 +176,8 @@
                                                 <p>
                                                 @Model.ReceiverMessages[j].message
                                                 </p>
+
+                                                <div class="createdAt">@Model.ReceiverMessages[j].createdAt.ToString("HH:mm")</div>
                                                
                                                 </div>
                                         
@@ -192,14 +217,34 @@
                                             
                                             <div class="msg">
 
+                                                @{
+                                                    var messageType = Model.ReceiverMessages[j].messageType;
+                                                    var replyingTo = Model.ReceiverMessages[j].replyingTo;
+                                                    var repliedMessageId = Model.ReceiverMessages[j].repliedMessageId;
+                                                    var nickname = Model.ReceiverMessages[j].Author.Nickname;
+                                                }
+
+                                                <div class="nickname">@(messageType == "Group" ? nickname : "")</div>
+
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
+
+
+
+                                                    <div class="chat-replied-box @((replyingTo == "self" || replyingTo != ViewBag.hostNickname) ? "received" : "sended")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                                         <div class="figure"></div>
 
                                                         <div class="chat-replied">
+
+                                                            @if (messageType == "Group")
+                                                            {
+
+                                                                <div class="nickname">@((replyingTo == "self" || replyingTo == ViewBag.hostNickname) ? "" : replyingTo)</div>
+
+                                                            }
+                                                            
                                                             @Model.ReceiverMessages[j].replyingToMessage
                                                         </div>
 
@@ -212,6 +257,8 @@
                                             <p>
                                             @Model.ReceiverMessages[j].message
                                             </p>
+
+                                                <div class="createdAt">@Model.ReceiverMessages[j].createdAt.ToString("HH:mm")</div>
                                             
                                             </div>
                                         </div>
@@ -232,14 +279,32 @@
                                        
 
                                         <div class="msg">
+
+                                            @{
+                                                var messageType = Model.AuthorMessages[i].messageType;
+                                                var replyingTo = Model.AuthorMessages[i].replyingTo;
+                                                var repliedMessageId = Model.AuthorMessages[i].repliedMessageId;
+                                            }
+
                                         
                                         @if(Model.AuthorMessages[i].replyingToMessage != null){
 
-                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].repliedMessageId) : Model.AuthorMessages[i].repliedMessageId)>
+                                                
+
+                                                
+                                                <div class="chat-replied-box @(replyingTo == "self" ? "sended" : "received")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                             <div class="figure"></div>
 
                                                 <div class="chat-replied">
+                                                
+                                                        @if(messageType == "Group")
+                                                        {
+                                                            <div class="nickname">@(replyingTo != "self" ? replyingTo : "")</div>
+
+                                                        }
+
+                                                        
                                                     @Model.AuthorMessages[i].replyingToMessage
                                                 </div>
 
@@ -250,6 +315,9 @@
                                         
                                         
                                         <p>@Model.AuthorMessages[i].message</p>
+
+
+                                            <div class="createdAt">@Model.AuthorMessages[i].createdAt.ToString("HH:mm")</div>
                                         
                                         </div>
                                         
@@ -297,14 +365,29 @@
 
                                         <div class="msg">
 
+                                            @{
+                                                var messageType = Model.AuthorMessages[i].messageType;
+                                                var replyingTo = Model.AuthorMessages[i].replyingTo;
+                                                var repliedMessageId = Model.AuthorMessages[i].repliedMessageId;
+                                                
+                                            }
+
                                             @if (Model.AuthorMessages[i].replyingToMessage != null)
                                             {
 
-                                                <div class="chat-replied-box @(Model.AuthorMessages[i].replyingTo == "self" ? "sended" : "received")" data-id=@(Model.AuthorMessages[i].messageType == "Group" ? ("G-" + Model.AuthorMessages[i].repliedMessageId) : Model.AuthorMessages[i].repliedMessageId)>
+
+
+
+                                                <div class="chat-replied-box @(replyingTo == "self" ? "sended" : "received")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                                     <div class="figure"></div>
 
                                                     <div class="chat-replied">
+                                                        @if (messageType == "Group")
+                                                        {
+                                                            <div class="nickname">@(replyingTo != "self" ? replyingTo : "")</div>
+
+                                                        }
                                                         @Model.AuthorMessages[i].replyingToMessage
                                                     </div>
 
@@ -315,6 +398,8 @@
                                             <p>
                                             @Model.AuthorMessages[i].message
                                             </p>
+
+                                            <div class="createdAt">@Model.AuthorMessages[i].createdAt.ToString("HH:mm")</div>
                                             
                                             
                                             </div>
@@ -383,14 +468,32 @@
                                            
                                             <div class="msg">
 
+                                                @{
+                                                    var messageType = Model.ReceiverMessages[j].messageType;
+                                                    var replyingTo = Model.ReceiverMessages[j].replyingTo;
+                                                    var repliedMessageId = Model.ReceiverMessages[j].repliedMessageId;
+                                                    var nickname = Model.ReceiverMessages[j].Author.Nickname;
+                                                }
+
+                                                <div class="nickname">@(messageType == "Group" ? nickname : "")</div>
+
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
+                                                    
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
+                                                    
+
+                                                    <div class="chat-replied-box @((replyingTo == "self" || replyingTo != ViewBag.hostNickname) ? "received" : "sended")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                                         <div class="figure"></div>
 
                                                         <div class="chat-replied">
+                                                            @if (messageType == "Group")
+                                                            {
+
+                                                                <div class="nickname">@((replyingTo == "self" || replyingTo == ViewBag.hostNickname) ? "" : replyingTo)</div>
+
+                                                            }
                                                             @Model.ReceiverMessages[j].replyingToMessage
                                                         </div>
 
@@ -402,6 +505,8 @@
                                                 <p>
                                             @Model.ReceiverMessages[j].message
                                                 </p>
+
+                                                <div class="createdAt">@Model.ReceiverMessages[j].createdAt.ToString("HH:mm")</div>
                                             
                                             </div>
                                         </div>
@@ -439,14 +544,31 @@
                                            
                                             <div class="msg">
 
+                                                @{
+                                                    var messageType = Model.ReceiverMessages[j].messageType;
+                                                    var replyingTo = Model.ReceiverMessages[j].replyingTo;
+                                                    var repliedMessageId = Model.ReceiverMessages[j].repliedMessageId;
+                                                    var nickname = Model.ReceiverMessages[j].Author.Nickname;
+                                                }
+
+                                                <div class="nickname">@(messageType == "Group" ? nickname : "")</div>
+
                                                 @if (Model.ReceiverMessages[j].replyingToMessage != null)
                                                 {
 
-                                                    <div class="chat-replied-box @(Model.ReceiverMessages[j].replyingTo == "self" ? "received" : "sended")" data-id=@(Model.ReceiverMessages[j].messageType == "Group" ? ("G-" + Model.ReceiverMessages[j].repliedMessageId) : Model.ReceiverMessages[j].repliedMessageId)>
+
+
+                                                    <div class="chat-replied-box @((replyingTo == "self" || replyingTo != ViewBag.hostNickname) ? "received" : "sended")" data-id=@(messageType == "Group" ? ("G-" + repliedMessageId) : repliedMessageId)>
 
                                                         <div class="figure"></div>
 
                                                         <div class="chat-replied">
+                                                             @if(messageType == "Group")
+                                                            {
+
+                                                                <div class="nickname">@((replyingTo == "self"  || replyingTo == ViewBag.hostNickname) ? "" : replyingTo)</div>
+                                                                
+                                                            }
                                                             @Model.ReceiverMessages[j].replyingToMessage
                                                         </div>
 
@@ -458,6 +580,8 @@
                                             <p>
                                             @Model.ReceiverMessages[j].message
                                             </p>
+
+                                                <div class="createdAt">@Model.ReceiverMessages[j].createdAt.ToString("HH:mm")</div>
                                             
                                             </div>
                                         </div>
@@ -513,6 +637,7 @@
                     
                    
                     <input value="@Model.Receiver.RowGuid" id="hiddenReceiverGuid" type="hidden" />
+                    <input value ="@ViewBag.hostNickname" id ="hiddenHostNickname" type="hidden"/>
             <div class="reply-box">
 
                 <div class="msg-replied">

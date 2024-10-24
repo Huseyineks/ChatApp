@@ -31,13 +31,10 @@ namespace ChatApp.BusinessLogicLayer.Concrete
            return _messageRepository.GetSortedList(filter);
         }
 
-        public int SetNextCommonId()
+        public Message GetMessageWithAuthor(Func<Message, bool> filter)
         {
-            return _messageRepository.SetNextCommonId();
-        }
-        public int GetCommonId()
-        {
-            return _messageRepository.GetCommonId();
+
+            return _messageRepository.GetMessageWithAuthor(filter);
         }
 
         public int? MaxValueOfGroupMessageId()

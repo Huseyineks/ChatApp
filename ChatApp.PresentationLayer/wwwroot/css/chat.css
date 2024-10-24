@@ -206,15 +206,15 @@ img {
 }
 
 
-.msg-sended .msg {
-    border-radius: 1.25rem;
-    background-color: #3797F0;
-    min-width:auto;
-    max-width:300px;
-    color:#FFFFFF;
-    padding: 10px;
-    
-}
+    .msg-sended .msg {
+        border-radius: 1.25rem;
+        background-color: #3797F0;
+        min-width: 75px;
+        max-width: 300px;
+        color: #FFFFFF;
+        padding: 10px;
+        position: relative;
+    }
 
 .msg-received {
     margin-top:8px;
@@ -224,16 +224,15 @@ img {
     align-items:center;
 }
 
-.msg-received .msg {
-    
-    border-radius: 1.25rem;
-    background-color: #EFEFEF;
-    min-width: auto;
-    max-width: 300px;
-    color:#000000;
-    padding:10px;
-    
-}
+    .msg-received .msg {
+        border-radius: 1.25rem;
+        background-color: #EFEFEF;
+        min-width: 75px;
+        max-width: 300px;
+        color: #000000;
+        padding: 10px;
+        position: relative;
+    }
 
 
 .not-seen-msg {
@@ -442,3 +441,38 @@ color: #000000;
 
 }
 
+
+.msg .nickname{
+
+    
+
+    font-size:x-small;
+
+    color:black;
+
+    padding-right:15px;
+
+
+}
+
+.msg .createdAt{
+
+    position:absolute;
+
+    bottom:3px;
+
+    right:7px;
+
+    font-size:x-small;
+
+    color:dimgray;
+
+    
+
+
+}
+
+.msg p{
+
+    margin-bottom:5px;
+}

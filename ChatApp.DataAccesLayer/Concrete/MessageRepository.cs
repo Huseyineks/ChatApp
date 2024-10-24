@@ -1,6 +1,7 @@
 ﻿using ChatApp.DataAccesLayer.Abstract;
 using ChatApp.DataAccesLayer.Data;
 using ChatApp.EntitiesLayer.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace ChatApp.DataAccesLayer.Concrete
     {
         private readonly ApplicationDbContext _db;
 
-        private static int _id = 1;
+        
         public MessageRepository(ApplicationDbContext db) : base(db)
         {
 
@@ -25,7 +26,9 @@ namespace ChatApp.DataAccesLayer.Concrete
 
         public List<Message> GetSortedData()
         {
-            var sortedData = _db.Messages.OrderBy(i => i.createdAt).ToList();
+            var sortedData = _db.Messages.Include(i => i.Author).OrderBy(i => i.createdAt).ToList();
+
+            
 
             return sortedData;
         }
@@ -39,19 +42,15 @@ namespace ChatApp.DataAccesLayer.Concrete
             return sortedList;
         }
 
-       public int SetNextCommonId()
+        public Message GetMessageWithAuthor(Func<Message,bool> filter)
         {
 
+            var message = _db.Messages.Include(i => i.Author).FirstOrDefault(filter);
 
-            _id++;
-
-            return _id;
+            return message;
         }
 
-    public int GetCommonId()
-        {
-            return _id;
-        }
+    
 
 
     public int? MaxValueOfGroupMessageId()

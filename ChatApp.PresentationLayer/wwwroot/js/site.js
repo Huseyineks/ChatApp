@@ -234,13 +234,14 @@ function deleteBoxEventListener(box) {
             messageType = "Private";
         }
 
+        var receiverGuid = document.getElementById("hiddenReceiverGuid").value;
 
         $.ajax({
 
             type: "POST",
             url: "/Chat/DeleteMessage",
             dataType: "json",
-            data: { messageId: messageId, messageType : messageType },
+            data: { messageId: messageId, messageType : messageType, receiverGuid : receiverGuid },
 
             success: function (result) {
 
