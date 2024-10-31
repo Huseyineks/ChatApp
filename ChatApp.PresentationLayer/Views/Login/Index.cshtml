@@ -1,21 +1,65 @@
 ﻿@model UserInformationDTO
-<div class="container">
+@{
+    Layout = null;
+}
 
-    <form method="post">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="mb-3">
-            <label for="Username" class="form-label">UserName</label>
-            <input type="text" class="form-control" id="Username" asp-for="UserName">
+<!DOCTYPE html>
 
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    
+    <link rel="stylesheet" href="~/login-form/style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <input type="checkbox" id="flip">
+        <div class="cover">
+            <div class="front">
+                <img src="~/login-form/images/frontImg.jpg" alt="">
+                <div class="text">
+                    <span class="text-1">Every new friend is a <br> new adventure</span>
+                    <span class="text-2">Let's get connected</span>
+                </div>
+            </div>
+            <div class="back">
+                <img class="backImg" src="~/login-form/images/backImg.jpg" alt="">
+                <div class="text">
+                    <span class="text-1">Complete miles of journey <br> with one step</span>
+                    <span class="text-2">Let's get started</span>
+                </div>
+            </div>
         </div>
-       
-        <div class="mb-3">
-            <label for="Password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="Password" asp-for="Password">
+        <div class="forms">
+            <div class="form-content">
+                <div class="login-form">
+                    <div class="title">Login</div>
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger" style="color:red;"></div>
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <input type="text" asp-for="UserName" placeholder="Enter your username" >
+                                
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" asp-for="Password" placeholder="Enter your password" >
+                            </div>
+                            <div class="text"><a href="#" style="color:#e27689;">Forgot password?</a></div>
+                            <div class="button input-box">
+                                <input type="submit" value="Sumbit">
+                            </div>
+                            <div class="text sign-up-text">Don't have an account? <label for="flip"><a asp-controller="Register" asp-action ="Index" style="color:inherit;">Signup now</a></label></div>
+                        </div>
+                    </form>
+                </div>
+              
+            </div>
         </div>
-        
-        
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-
-</div>
+    </div>
+</body>
+</html>

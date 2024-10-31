@@ -1,35 +1,77 @@
-﻿
-@model UserInformationDTO
-<div class="container">
+﻿@model UserInformationDTO
+@{
+    Layout = null;
+}
 
-    <form method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="mb-3">
-        <label for="Username" class="form-label">UserName</label>
-        <input type="text" class="form-control" id="Username" asp-for="UserName" >
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="~/login-form/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <input type="checkbox" id="flip">
+        <div class="cover">
+            <div class="back">
+                <img class="backImg" src="~/login-form/images/backImg.jpg" alt="">
+                <div class="text">
+                    <span class="text-1">Complete miles of journey <br> with one step</span>
+                    <span class="text-2">Let's get started</span>
+                </div>
+            </div>
+        </div>
+        <div class="forms">
+            <div class="form-content">
+                 <div class="signup-form">
+                <div class="title">Signup</div>
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" style="color:red;"></div>
+                <div class="input-boxes">
+                <div class="input-box">
+                <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Enter your username"asp-for="UserName">
+                </div>
+                <div class="input-box">
+                <i class="fas fa-signature"></i>
+                <input type="text" placeholder="Enter your nickname" asp-for="Nickname">
+                </div>
+                <div class="input-box">
+                <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Enter your password" asp-for="Password">
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Confirm your password" asp-for="ConfirmPassword">
+                </div>
+
+                <div class="input-box">
+                    <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Enter your email" asp-for="Email">
+                </div>
+
+                
+                    <input class="form-control" id="UserImage" asp-for="UserImage">
+                
+
+                        
+                        
+                <div class="button input-box">
+                <input type="submit" value="Sumbit">
+                </div>
+                            <div class="text sign-up-text">Already have an account? <label for="flip"><a asp-controller="Login" asp-action="Index" style="color:#e27689;">Login now</a></label></div>
+                </div>
+                </form>
+                </div>
+            </div>
+            </div>
+        </div>
     
-    </div>
-    <div class="mb-3">
-        <label for="Nickname" class="form-label">Nickname</label>
-        <input type="text" class="form-control" id ="Nickname" asp-for="Nickname">
-    </div>
-    <div class="mb-3">
-            <label for="Password" class="form-label">Password</label>
-            <input type="password" class="form-control" id ="Password" asp-for="Password">
-    </div>
-    <div class="mb-3">
-        <label for="Confirmpassword" class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" id="Confirmpassword" asp-for="ConfirmPassword">
-    </div>
-    <div class="mb-3">
-        <label for="Email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="Email" asp-for="Email">
-    </div>
-    <div class="mb-3">
-        <label for="UserImage">Profile Image</label>
-        <input class="form-control" id="UserImage" asp-for="UserImage">
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
-
-</div>
+</body>
+</html>

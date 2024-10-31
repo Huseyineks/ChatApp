@@ -43,13 +43,20 @@ namespace ChatApp.PresentationLayer.Controllers
             _webHostEnvironment = webHostEnvironment;
             _userService = userService;
         }
+
+
         public IActionResult Index()
         {
            
 
             return View();
         }
+        public IActionResult Deneme()
+        {
 
+
+            return View();
+        }
 
         public async Task<IActionResult> Text(Guid guid) {
 
