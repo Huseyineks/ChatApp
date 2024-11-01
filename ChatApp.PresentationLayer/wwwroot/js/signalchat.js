@@ -50,7 +50,87 @@ connection.on("ReceiveMessage", function (messageDTO) {
 
         div.setAttribute("data-id", messageDTO.messageId);
 
-        div.innerHTML += ` <div class="dropdown">
+        var msg_div = document.createElement("div");
+        msg_div.className = "msg";
+        document.getElementById("messagesList").appendChild(div);
+        div.appendChild(msg_div);
+        if (messageDTO.replyingMessage != null) {
+
+         
+            var chatRepliedBox = document.createElement("div");
+
+            chatRepliedBox.className = "chat-replied-box";
+
+            
+
+            chatRepliedBox.setAttribute("data-id", messageDTO.repliedMessageId);
+
+            var chatReplied = document.createElement("div");
+
+            chatReplied.className = "chat-replied";
+
+            var chatRepliedNickname = document.createElement("div");
+
+            chatRepliedNickname.className = "nickname";
+
+            var figure = document.createElement("div");
+
+            figure.className = "figure";
+
+            msg_div.appendChild(chatRepliedBox);
+
+            chatRepliedBox.appendChild(figure);
+            chatRepliedBox.appendChild(chatReplied);
+
+            var hostNickname = document.getElementById("hiddenHostNickname").value;
+
+            if (messageDTO.replyingTo != hostNickname) {
+
+                chatRepliedNickname.textContent = messageDTO.authorNickname;
+            }
+            else {
+
+                chatRepliedNickname.textContent = "You";
+            }
+
+            chatReplied.appendChild(chatRepliedNickname);
+
+            var replyingMessageDiv = document.createElement("div");
+
+            chatReplied.appendChild(replyingMessageDiv);
+
+            replyingMessageDiv.textContent = messageDTO.replyingMessage;
+
+
+            
+
+           
+
+            repliedMessageEventListener(chatRepliedBox);
+
+        }
+        msg_div.appendChild(p);
+
+        var createdDiv = document.createElement("div");
+
+        createdDiv.className = "createdAt";
+
+        createdDiv.textContent = messageDTO.createdAt;
+
+        msg_div.appendChild(createdDiv);
+
+
+        p.textContent = `${messageDTO.message}`;
+
+        div.innerHTML += ` 
+                                        <div class="choices">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
+                                                </svg>
+                                            </div>
+
+
+                                         <div class="dropdown">
                                                 <div class="forward">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
                                                         <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z" />
@@ -71,57 +151,11 @@ connection.on("ReceiveMessage", function (messageDTO) {
 
 
                                             </div>
-                                            <div class="choices">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
-                                                </svg>
-                                            </div>`;
-        var msg_div = document.createElement("div");
-        msg_div.className = "msg";
-        document.getElementById("messagesList").appendChild(div);
-        div.appendChild(msg_div);
+                                            `;
+        
 
        
-        if (messageDTO.replyingMessage != null) {
-
-            var chatRepliedBox = document.createElement("div");
-
-            chatRepliedBox.className = "chat-replied-box";
-
-            chatRepliedBox.classList.add(messageDTO.replyingTo == "self" ? "received" : "sended");
-
-            chatRepliedBox.setAttribute("data-id", messageDTO.repliedMessageId);
-
-            var chatReplied = document.createElement("div");
-
-            chatReplied.className = "chat-replied";
-
-            var figure = document.createElement("div");
-
-            figure.className = "figure";
-
-            msg_div.appendChild(chatRepliedBox);
-
-            chatRepliedBox.appendChild(figure);
-            chatRepliedBox.appendChild(chatReplied);
-
-            chatReplied.textContent = messageDTO.replyingMessage;
-
-            repliedMessageEventListener(chatRepliedBox);
-
-        }
-        msg_div.appendChild(p);
-
-        var createdDiv = document.createElement("div");
-
-        createdDiv.className = "createdAt";
-
-        createdDiv.textContent = messageDTO.createdAt;
-
-        msg_div.appendChild(createdDiv);
-
-
-        p.textContent = `${messageDTO.message}`;
+        
 
 
         replyBoxEventListener(div.querySelector(".reply"));
@@ -188,37 +222,10 @@ connection.on("GroupMessage", function (messageDTO) {
 
         div.setAttribute("data-id", "G-" + messageDTO.messageId);
 
-        div.innerHTML += ` <div class="dropdown">
-                                                <div class="forward">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
-                                                        <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z" />
-                                                    </svg>Forward
-                                                </div>
-
-                                                <div class="reply">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
-                                                        <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z" />
-                                                    </svg>Reply
-                                                </div>
-
-                                                <div class="delete">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                                                    </svg>Delete
-                                                </div>
-
-
-                                            </div>
-                                            <div class="choices">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
-                                                </svg>
-                                            </div>`;
         var msg_div = document.createElement("div");
         msg_div.className = "msg";
         document.getElementById("messagesList").appendChild(div);
         div.appendChild(msg_div);
-
         var nicknameDiv = document.createElement("div");
         nicknameDiv.className = "nickname";
         nicknameDiv.textContent = messageDTO.authorNickname;
@@ -231,16 +238,9 @@ connection.on("GroupMessage", function (messageDTO) {
 
             chatRepliedBox.className = "chat-replied-box";
 
-            if (repliedMessage.classList.contains('msg-received')) {
+           
 
-                chatRepliedBox.classList.add("received");
-            }
-            else {
 
-                chatRepliedBox.classList.add("sended");
-            }
-
-            
 
             chatRepliedBox.setAttribute("data-id", "G-" + messageDTO.repliedMessageId);
 
@@ -250,16 +250,23 @@ connection.on("GroupMessage", function (messageDTO) {
 
             var hostNickname = document.getElementById("hiddenHostNickname").value;
 
-            if (messageDTO.replyingTo != hostNickname && messageDTO.authorNickname != messageDTO.replyingTo) {
+            var chatRepliedNickname = document.createElement("div");
 
-                var chatRepliedNickname = document.createElement("div");
+            chatRepliedNickname.className = "nickname";
 
-                chatRepliedNickname.className = "nickname";
+            if (messageDTO.replyingTo != hostNickname) {
+
+
 
                 chatRepliedNickname.textContent = messageDTO.replyingTo;
 
-                chatReplied.appendChild(chatRepliedNickname);
+                
+            } else {
+
+                chatRepliedNickname.textContent = "You";
             }
+
+            chatReplied.appendChild(chatRepliedNickname);
 
             var figure = document.createElement("div");
 
@@ -289,6 +296,43 @@ connection.on("GroupMessage", function (messageDTO) {
 
         msg_div.appendChild(createdDiv);
         p.textContent = `${messageDTO.message}`;
+
+         div.innerHTML +=                ` 
+                                            <div class="choices">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                                    <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
+                                                </svg>
+                                            </div>
+
+
+
+
+
+                                          <div class="dropdown">
+                                                <div class="forward">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M14.854 4.854a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 4H3.5A2.5 2.5 0 0 0 1 6.5v8a.5.5 0 0 0 1 0v-8A1.5 1.5 0 0 1 3.5 5h9.793l-3.147 3.146a.5.5 0 0 0 .708.708z" />
+                                                    </svg>Forward
+                                                </div>
+
+                                                <div class="reply">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-left" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z" />
+                                                    </svg>Reply
+                                                </div>
+
+                                                <div class="delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                                    </svg>Delete
+                                                </div>
+
+
+                                            </div>
+                                            `;
+        
+
+       
 
         replyBoxEventListener(div.querySelector(".reply"));
 
@@ -376,7 +420,7 @@ connection.on("CallerMessage", function (messageDTO) {
     msg_div.className = "msg";
     document.getElementById("messagesList").appendChild(div);
 
-    div.appendChild(msg_div);
+    
 
     
 
@@ -384,71 +428,75 @@ connection.on("CallerMessage", function (messageDTO) {
 
        
 
-        chatRepliedBox.classList.add(document.querySelector(".replying-to-message").getAttribute("data-author") == "self" ? "sended" : "received");
+        
 
         var chatReplied = document.createElement("div");
+        var figure = document.createElement("div");
+        
+
 
         chatReplied.className = "chat-replied";
-
-       
-
-        var figure = document.createElement("div");
-
         figure.className = "figure";
-        
+        var chatRepliedNickname = document.createElement("div");
+
+        chatRepliedNickname.className = "nickname";
         msg_div.appendChild(chatRepliedBox);
 
         chatRepliedBox.appendChild(figure);
         chatRepliedBox.appendChild(chatReplied);
 
+        var hostNickname = document.getElementById("hiddenHostNickname").value;
+
         if (messageDTO.messageType == "Group") {
 
-            var hostNickname = document.getElementById("hiddenHostNickname").value;
+            
+
+           
 
             if (hostNickname != messageDTO.replyingTo) {
 
-                var chatRepliedNickname = document.createElement("div");
 
-                chatRepliedNickname.className = "nickname";
                 chatRepliedNickname.textContent = messageDTO.replyingTo;
-                
 
-                chatReplied.appendChild(chatRepliedNickname);
 
-                
+
+
+
 
             }
+            else {
+
+                chatRepliedNickname.textContent = "You";
+            }
+            chatReplied.appendChild(chatRepliedNickname);
         }
+        else {
+
+            if (hostNickname == messageDTO.replyingTo) {
+
+                chatRepliedNickname.textContent = "You";
+            }
+            else {
+
+                chatRepliedNickname.textContent = messageDTO.replyingTo;
+            }
+            chatReplied.appendChild(chatRepliedNickname);
+        }
+
         var replyingMessageDiv = document.createElement("div");
 
         chatReplied.appendChild(replyingMessageDiv);
         replyingMessageDiv.textContent = messageDTO.replyingMessage;
 
-        //chatReplied.textContent = messageDTO.replyingMessage;
+        
         
 
        
 
     }
-    msg_div.appendChild(p);
+   
 
-    var createdDiv = document.createElement("div");
-
-    createdDiv.className = "createdAt";
-
-    createdDiv.textContent = messageDTO.createdAt;
-
-    msg_div.appendChild(createdDiv);
-
-
-
-    p.textContent = `${messageDTO.message}`;
-
-    div.innerHTML += ` <div class="choices">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                                <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
-                                            </svg>
-                                        </div>
+    div.innerHTML +=                 ` 
                                         <div class="dropdown">
                                             <div class="forward">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-right" viewBox="0 0 16 16">
@@ -469,7 +517,28 @@ connection.on("CallerMessage", function (messageDTO) {
                                             </div>
 
 
-                                        </div>`;  
+                                        </div>
+                                        <div class="choices">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                                <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
+                                            </svg>
+                                        </div>`;
+
+    div.appendChild(msg_div);
+
+    msg_div.appendChild(p);
+
+    var createdDiv = document.createElement("div");
+
+    createdDiv.className = "createdAt";
+
+    createdDiv.textContent = messageDTO.createdAt;
+
+    msg_div.appendChild(createdDiv);
+
+
+
+    p.textContent = `${messageDTO.message}`;
 
 
     sendedMessageEventListener(div);

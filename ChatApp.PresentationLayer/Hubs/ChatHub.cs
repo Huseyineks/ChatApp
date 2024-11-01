@@ -55,7 +55,7 @@ namespace ChatApp.PresentationLayer.Hubs
 
                 replyingToMessage = rmsg?.message,
 
-                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : rmsg?.Author.Nickname,
+                replyingTo = rmsg?.Author.Nickname,
 
                 repliedMessageId = rmsg?.Id,
 
@@ -76,6 +76,7 @@ namespace ChatApp.PresentationLayer.Hubs
                 replyingMessage = newMessage.replyingToMessage,
                 replyingTo = newMessage.replyingTo,
                 createdAt = createdAt,
+                authorNickname = hostUser.Nickname
                 
 
             };
@@ -117,8 +118,9 @@ namespace ChatApp.PresentationLayer.Hubs
                 createdAt = createdAt,
                 messageId = newMessage.Id,
                 repliedMessageId = newMessage.repliedMessageId,
-                replyingMessage = rmsg?.message,
-                messageType = "Private"
+                replyingMessage = newMessage.replyingToMessage,
+                messageType = "Private",
+                replyingTo = newMessage.replyingTo
 
             };
             
@@ -151,7 +153,7 @@ namespace ChatApp.PresentationLayer.Hubs
                 Status = MessageStatus.Seen,
                 replyingToMessage = rmsg?.message,
 
-                replyingTo = rmsg?.authorGuid == authorGuid ? "self" : rmsg?.Author.Nickname,
+                replyingTo = rmsg?.Author.Nickname,
 
                 repliedMessageId = rmsg?.groupMessageId,
                 authorId = int.Parse(Context.UserIdentifier),
@@ -181,7 +183,7 @@ namespace ChatApp.PresentationLayer.Hubs
                     message = message,
                     replyingToMessage = rmsg?.message,
 
-                    replyingTo = newMessageSended.authorGuid == rmsg?.authorGuid ? "self" : rmsg?.Author.Nickname,
+                    replyingTo =  rmsg?.Author.Nickname,
 
                     repliedMessageId = rmsg?.groupMessageId,
                     authorId = int.Parse(Context.UserIdentifier), // this guid is equal to guid of author from group

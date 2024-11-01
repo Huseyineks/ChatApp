@@ -8,7 +8,7 @@ namespace ChatApp.BusinessLogicLayer.DTOs
 {
     public class ReceiveMessageDTO
     {
-        //authorGuid, message,replyingMessage,messageId,replyingTo,repliedMessageId
+        
 
         public string message {  get; set; }
 
@@ -21,6 +21,8 @@ namespace ChatApp.BusinessLogicLayer.DTOs
         public string? replyingTo { get; set; }
 
         public int? repliedMessageId { get; set; }
+
+        public string? authorNickname { get; set; }
 
         public string createdAt { get; set; }
 

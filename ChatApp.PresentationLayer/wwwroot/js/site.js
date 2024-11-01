@@ -174,7 +174,7 @@ function replyBoxEventListener(box) {
 
 
 
-            msgReplied.style.backgroundColor = "#3797F0";
+            msgReplied.style.backgroundColor = "#e27689";
 
             replyBox.querySelector(".replying-to").textContent = "You're replying yourself..";
 
