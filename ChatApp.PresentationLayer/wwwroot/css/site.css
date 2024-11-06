@@ -17,6 +17,82 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
+.parent {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 0;
+    margin: 0;
+}
+.parent.smaller {
+        grid-template-columns: 50px 1fr;
+       
+    }
+
+p {
+    padding: 0;
+    margin: 0;
+    display:inline-block;
+}
+a{
+    color:inherit;
+}
+a:hover{
+
+    color:inherit;
+}
+
+.side-bar {
+    background-color: #222629;
+    height: 100vh;
+    width: 100%;
+    transition: width 1s ease-in;
+}
+
+.side-bar.smaller {
+    width: 75px;
+    
+    
+
+   
+   
+}
+
+.side-bar.smaller p{
+
+    display:none;
+
+}
+
+.side-bar ul {
+    padding: 10px;
+    margin: 0;
+       
+}
+
+.side-bar ul li {
+    color: #e27689;
+    list-style: none;
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+    padding:10px;
+    font-size: large;
+    margin-right:10px;
+            
+}
+
+.side-bar h2 {
+    color: #e27689;
+    padding: 20px;
+}
+
+.side-bar i{
+
+    margin-right:10px;
+}
+
+
+.ul-container .end {
+    position: absolute;
+    bottom: 0;
 }

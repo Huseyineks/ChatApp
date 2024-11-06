@@ -47,16 +47,11 @@ namespace ChatApp.PresentationLayer.Controllers
 
         public IActionResult Index()
         {
-           
+            ViewBag.SidebarSize = "Small";
 
             return View();
         }
-        public IActionResult Deneme()
-        {
-
-
-            return View();
-        }
+        
 
         public async Task<IActionResult> Text(Guid guid) {
 
@@ -115,6 +110,7 @@ namespace ChatApp.PresentationLayer.Controllers
             };        
 
             ViewBag.hostNickname = hostUser.Nickname;
+            ViewBag.SidebarSize = "Small";
             return View(chatViewModel);
         
         }

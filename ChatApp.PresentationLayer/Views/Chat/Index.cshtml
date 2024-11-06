@@ -1,37 +1,33 @@
 ﻿@model ChatViewModel
-@section Styles{
+@section Styles {
 
     <link rel="stylesheet" href="~/css/chat.css">
 }
 
 <div style="width:100%;">
-       <div class="box">
+    <div class="box">
 
 
-           <div class="column column-1 border-5">
-               
-           @await Component.InvokeAsync("ChatUserBox")
+        <div class="column column-1 border-5">
+
+            @await Component.InvokeAsync("ChatUserBox")
 
 
-           </div>
+        </div>
 
 
-           <div class="column column-2">
-
-              
-
-
-           </div>
+        <div class="column column-2">
+        </div>
 
 
 
 
 
-       </div>
-       </div>
+    </div>
+</div>
 
 
-    
+
 
 
 

@@ -6,6 +6,8 @@
     
 }
 
+
+
 * {
     box-sizing: border-box;
    
@@ -19,25 +21,23 @@ p{
 }
 
 
-.box {
-   
 
+.box {
     display: grid;
-    padding:2rem;
-    
+    padding: 2rem;
     justify-content: center;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr;
+    height:95vh;
+    
 }
 
 .chat-box {
     border: 1px solid lightgrey;
-    
-    display:flex;
+    display: flex;
+    justify-content: space-around;
 
-    justify-content:space-around;
 
-    
 }
 
     .chat-box button {
@@ -59,14 +59,15 @@ p{
 .scroll-bar-users {
     overflow: hidden;
     overflow-y: scroll;
-    height:70vh;
-    
-   
+    height: 90vh;
+    border: 1px solid lightgrey;
 }
 .scroll-bar-messages {
+    
     overflow: hidden;
     overflow-y: scroll;
-    height: 54vh;
+    height: 75vh;
+    padding:5px;
 }
 
 a{
