@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChatApp.BusinessLogicLayer.DTOs
 {
-    public class UserInformationDTO : UserInformationBaseDTO
+    public class UserUpdateInformationDTO : UserInformationBaseDTO
     {
-       
+        public string? CurrentPassword { get; set; }
+        
     }
 }

@@ -1,4 +1,6 @@
-﻿using ChatApp.BusinessLogicLayer.DTOs;
+﻿using ChatApp.BusinessLogicLayer.Abstract;
+using ChatApp.BusinessLogicLayer.DTOs;
+using ChatApp.BusinessLogicLayer.Validators;
 using ChatApp.EntitiesLayer.Model;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -12,14 +14,16 @@ namespace ChatApp.PresentationLayer.Controllers
     public class RegisterController : Controller
     {
         
-        private readonly UserManager<AppUser> _userManager;
-        private readonly IValidator<UserInformationDTO> _userValidator;
+        
+        private IValidator<UserInformationDTO> _userValidator;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public RegisterController(UserManager<AppUser> userManager, IValidator<UserInformationDTO> userValidator, IWebHostEnvironment webHostEnvironment = null)
+        private readonly UserManager<AppUser> _userManager;
+        public RegisterController(IValidator<UserInformationDTO> userValidator, IWebHostEnvironment webHostEnvironment = null, UserManager<AppUser> userManager = null)
         {
-            _userManager = userManager;
+            
             _userValidator = userValidator;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -32,6 +36,8 @@ namespace ChatApp.PresentationLayer.Controllers
 
         public async Task<IActionResult> Index(UserInformationDTO userInfo)
         {
+
+            
 
             var check = _userValidator.Validate(userInfo);
 

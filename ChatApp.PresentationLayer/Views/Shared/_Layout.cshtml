@@ -12,34 +12,8 @@
 </head>
 <body>
     <div class="parent @(ViewBag.SidebarSize == "Small" ? "smaller" : "")">
-    <div class="side-bar @(ViewBag.SidebarSize == "Small" ? "smaller" : "")">
-         <div class="logo">
-            <h2>
-           <a asp-controller="Home" asp-action="Index"> <i class="fa-solid fa-message"></i> </a>
-
-        </h2>
-        </div>
-        
-        <div class="ul-container">
-           
-
-
-            <ul>
-
-                <li><a><i class="fa-solid fa-user"></i> <p class="link">Hesabım</p><br></a></li>
-                <li><a><i class="fa-solid fa-bell"></i>  <p class="link">Bildirimler</p><br></a></li>
-                <li class="messages"><a asp-controller="Chat" asp-action="Index"><i class="fa-solid fa-envelope"></i> <p class="link">Messages</p><br></a></li>
-
-            </ul>
-
-            <ul class="end">
-                <li><a asp-controller="Login" asp-action="Index"><i class="fa-solid fa-right-to-bracket"></i>  <p class="link">Giriş Yap</p><br></a></li>
-                <li><a asp-controller="Login" asp-action="Logout"><i class="fa-solid fa-right-from-bracket"></i>  <p class="link">Çıkış Yap</p><br></a></li>
-
-            </ul>
-        </div>
-
-    </div>
+    
+        @await Component.InvokeAsync("Sidebar")
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

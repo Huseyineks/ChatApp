@@ -237,7 +237,7 @@ img {
 
 
 .not-seen-msg {
-    background-color: #3797F0;
+    background-color: #e27689;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -346,6 +346,11 @@ img {
  align-items:center;
 
 
+}
+
+.modal.activated{
+
+    display:flex;
 }
 
 

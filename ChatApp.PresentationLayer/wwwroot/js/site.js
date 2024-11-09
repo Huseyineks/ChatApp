@@ -523,6 +523,44 @@ function createGroup() {
 
 }
 
+function handleVerification() {
+
+    var modal = documnet.getElementById("confirmMail");
+
+    var codeReceived = document.getElementById("codeReceived");
+    var emailCode = document.getElementById("emailCode");
+
+    $.ajax({
+
+        type: "POST",
+        url: "/User/EmailVerification",
+        dataType: "json",
+        data: { codeReceived: codeReceived, emailCode: emailCode },
+
+        success: function (result) {
+
+            if (result.success) {
+
+                window.location.href = result.redirectUrl;
+            }
+
+            console.log(result);
+        },
+
+        error: function (req, status, error) {
+
+            alert(error);
+
+        }
+
+
+
+    });
+
+    modal.style.display = "none";
+
+}
+
 function startEventListener() {
 
     var replyBoxes = document.querySelectorAll(".reply");
