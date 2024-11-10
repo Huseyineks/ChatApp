@@ -1,0 +1,15 @@
+﻿@model ConfirmMailDTO
+
+
+
+<form method="post">
+
+    <div class="form-group col-6">
+        <label for="emailCode">Please enter the 5-digit code sent your e-mail</label>
+        <div asp-validation-summary="All" style="color:red;"></div>
+        <input type="text" class="form-control" id="emailCode" asp-for="CodeReceived" placeholder="Code">
+        <input type="text" value="@ViewBag.EmailCode" asp-for="EmailCode" hidden>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

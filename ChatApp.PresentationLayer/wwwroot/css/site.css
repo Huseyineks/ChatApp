@@ -17,6 +17,8 @@ html {
   min-height: 100%;
 }
 
+
+
 .parent {
     display: grid;
     grid-template-columns: 200px 1fr;

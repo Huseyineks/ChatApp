@@ -523,43 +523,7 @@ function createGroup() {
 
 }
 
-function handleVerification() {
 
-    var modal = documnet.getElementById("confirmMail");
-
-    var codeReceived = document.getElementById("codeReceived");
-    var emailCode = document.getElementById("emailCode");
-
-    $.ajax({
-
-        type: "POST",
-        url: "/User/EmailVerification",
-        dataType: "json",
-        data: { codeReceived: codeReceived, emailCode: emailCode },
-
-        success: function (result) {
-
-            if (result.success) {
-
-                window.location.href = result.redirectUrl;
-            }
-
-            console.log(result);
-        },
-
-        error: function (req, status, error) {
-
-            alert(error);
-
-        }
-
-
-
-    });
-
-    modal.style.display = "none";
-
-}
 
 function startEventListener() {
 
@@ -772,4 +736,22 @@ function startEventListener() {
 }
 
 
-document.addEventListener("DOMContentLoaded", startObserving);
+//document.addEventListener("DOMContentLoaded", startObserving);
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    startObserving();
+
+    var successToastEl = document.getElementById('successToast');
+    if (successToastEl) {
+        var successToast = new bootstrap.Toast(successToastEl);
+        successToast.show();
+    }
+
+
+    var errorToastEl = document.getElementById('errorToast');
+    if (errorToastEl) {
+        var errorToast = new bootstrap.Toast(errorToastEl);
+        errorToast.show();
+    }
+});

@@ -18,6 +18,7 @@ namespace ChatApp.PresentationLayer.Controllers
         private readonly IUserService _userService;
         private readonly IValidator<UserUpdateInformationDTO> _validator;
         private readonly UserManager<AppUser> _userManager;
+       
         
         public UserController(UserManager<AppUser> userManager,IUserService userService,IValidator<UserUpdateInformationDTO> validator) { 
         
@@ -81,53 +82,11 @@ namespace ChatApp.PresentationLayer.Controllers
                 
                 await _userManager.UpdateAsync(user);
             
+        if(userInformationDTO.Email != null)
+            {
+                TempData["NewEmail"] = userInformationDTO.Email;
 
-            
-
-            int code;
-            Random random = new Random();
-            
-            
-            
-            
-            if (userInformationDTO.Email  != null) { 
-           
-            code = random.Next(10000, 100000);
-           
-
-
-                 MimeMessage mimeMessage= new MimeMessage();
-                 MailboxAddress mailboxAddressFrom = new MailboxAddress("ChatApp", "huseyineksici02@gmail.com");
-                 MailboxAddress mailboxAddressTo = new MailboxAddress("User",$"{user.Email}");
-
-                mimeMessage.From.Add(mailboxAddressFrom);
-                mimeMessage.To.Add(mailboxAddressTo);
-
-                BodyBuilder bodyBuilder = new BodyBuilder();
-                bodyBuilder.TextBody = "Verification Code to Change Your Password: " + code;
-
-                mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-                mimeMessage.Subject = "Chat App";
-
-                var client = new SmtpClient();
-
-                client.Connect("smtp.gmail.com", 587, false);
-                client.Authenticate("huseyineksici02@gmail.com", "utvewewppwnddgck");
-                client.Send(mimeMessage);
-                client.Disconnect(true);
-
-                
-
-                ViewBag.ConfirmMailModal = true;
-                ViewBag.Code = code;
-                
-
-            
-                
-
-                return View();
-
+                return RedirectToAction("Email", "EmailVerification");
             }
           
 
@@ -136,22 +95,49 @@ namespace ChatApp.PresentationLayer.Controllers
             return View(userInformationDTO);
         }
 
+        public  IActionResult ChangePassword()
+        {
+			ViewBag.SidebarSize = "Small";
+
+
+			return View();
+        }
 
         [HttpPost]
-        public async Task<JsonResult> EmailVerification(int codeReceived, int emailCode)
+
+
+        public IActionResult ChangePassword(UserUpdateInformationDTO userInformationDTO)
         {
-            if (codeReceived == emailCode)
+            ViewBag.SidebarSize = "Small";
+
+            var result = _validator.Validate(userInformationDTO);
+
+            foreach(var error in result.Errors)
             {
+                ModelState.AddModelError(String.Empty,error.ErrorMessage);
+            }
 
-                Console.WriteLine("SAAAAAAAAAAA");
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                if(userInformationDTO.Password != null)
+                {
+                    TempData["NewPassword"] = userInformationDTO.Password;
+                    TempData["CurrentPassword"] = userInformationDTO.CurrentPassword;
 
+
+                    return RedirectToAction("Password", "EmailVerification");
+                }
             }
 
 
-
-
-            return Json(Ok());
+            return View();
         }
+
+       
 
 
     }

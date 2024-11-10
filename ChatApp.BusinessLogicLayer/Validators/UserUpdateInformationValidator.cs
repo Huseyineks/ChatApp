@@ -21,9 +21,10 @@ namespace ChatApp.BusinessLogicLayer.Validators
 
 
             RuleFor(i => i.Email).EmailAddress().WithMessage("Please enter a valid email.").When(i => i.Email != null);
-            RuleFor(i => i.Password).Equal(i => i.ConfirmPassword).WithMessage("Make sure passwords are same.").When(i => i.Password != null);
+            RuleFor(i => i.Password).Equal(i => i.ConfirmPassword).WithMessage("Make sure passwords are same.").When(i => i.Password != null && i.ConfirmPassword != null);
             RuleFor(i => i.UserName).Must(beAlphabetic).WithMessage("Please enter a valid username.").When(i => i.UserName != null);
             RuleFor(i => i.Nickname).Must(nicknameExisted).WithMessage("This nickname is already taken.").When(i => i.Nickname != null);
+            RuleFor(i => i.CurrentPassword).NotEmpty().WithMessage("Password field is required.").When(i => i.Password != null);
             
 
 
